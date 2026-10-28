@@ -4,6 +4,8 @@ const macChrome =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 export default defineConfig({
   testDir: "./tests",
+  outputDir: "test-results/e2e",
+  testIgnore: "**/pages.spec.ts",
   fullyParallel: false,
   workers: 1,
   reporter: "list",

@@ -9,19 +9,20 @@ export function TourFrame({ children }: { children: ReactNode }) {
   const { notify } = useDemo();
   const location = useLocation();
   const navigate = useNavigate();
-  const active = presentation.tourActive && location.pathname !== "/demo";
+  const active =
+    presentation.tourActive && !["/guide", "/demo"].includes(location.pathname);
   const step = tourSteps.findIndex((s) => s.path === location.pathname);
   function next() {
     if (step === 3) {
       setTour(false);
-      notify("四段呈現已結束，可繼續自由瀏覽");
+      notify("行動旅程已完成，可繼續自由瀏覽");
     } else navigate(tourSteps[Math.max(0, step + 1)].path);
   }
   return (
     <div className={`experience-root ${active ? "tour-on" : ""}`}>
       {active && (
         <aside className="tour-bar" aria-label="行動旅程導覽">
-          <Link to="/demo" className="tour-brand">
+          <Link to="/guide" className="tour-brand">
             行動導覽 <span>{step < 0 ? "自由瀏覽" : `${step + 1} / 4`}</span>
           </Link>
           <nav aria-label="旅程步驟">

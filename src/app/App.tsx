@@ -1,4 +1,11 @@
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  HashRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { TourFrame } from "../components/experience/Tour";
 import { Landing } from "../pages/Landing";
 import { Analytics, Dashboard } from "../pages/admin/Dashboard";
@@ -18,14 +25,16 @@ import { TrashScan, TravelScan } from "../pages/employee/Scans";
 import { DemoProvider } from "../store/demo";
 import { ExperienceProvider } from "../store/experience";
 import { AdminLayout, EmployeeLayout } from "./Layouts";
+const Router = import.meta.env.PROD ? HashRouter : BrowserRouter;
 export default function App() {
   return (
     <DemoProvider>
       <ExperienceProvider>
-        <BrowserRouter>
+        <Router>
           <TourFrame>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/guide" element={<Demo />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/app" element={<EmployeeLayout />}>
                 <Route index element={<Navigate replace to="home" />} />
@@ -62,7 +71,7 @@ export default function App() {
               />
             </Routes>
           </TourFrame>
-        </BrowserRouter>
+        </Router>
       </ExperienceProvider>
     </DemoProvider>
   );

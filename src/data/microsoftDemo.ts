@@ -11,7 +11,7 @@ export const TRAVEL_PRESET = {
 export const DATASET = {
   name: "Eco-Sensing 本機資料集",
   version: "v1 · 2026/10/27",
-  description: "預設交通與感測呈現數值，非官方排放係數。",
+  description: "交通與感測的初始數值，非官方排放係數。",
 };
 export const tourSteps = [
   {

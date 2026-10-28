@@ -23,7 +23,6 @@ export function Demo() {
           <Link className="text-link" to="/app/home">
             自由瀏覽員工端
           </Link>
-          
         </div>
       </header>
       <main>
@@ -36,7 +35,7 @@ export function Demo() {
               整個團隊的下一步。
             </h1>
             <p>
-              從一張高鐵票開始，看看資料如何經過 AI 流程範例、回到
+              從一張高鐵票開始，看看資料如何經過 AI 處理流程、回到
               Teams，再成為主管的洞察。
             </p>
             <button
@@ -70,10 +69,10 @@ export function Demo() {
         <div className="demo-preserved">
           <Check size={18} />
           <div>
-            <b>保留你目前的呈現紀錄</b>
+            <b>接續你目前的行動紀錄</b>
             <p>
               目前共 {state.events.length} 筆事件、{state.claimed.length}{" "}
-              項已領獎任務。開始導覽不會清除資料；需要重新呈現時，可自行重設。
+              項已領獎任務。開始導覽不會清除資料；需要重新開始時，可自行重設。
             </p>
           </div>
           <ResetButton />

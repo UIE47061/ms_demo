@@ -1,3 +1,4 @@
+import { ActionArt } from "../../components/experience/ActionArt";
 import {
   ArrowRight,
   CalendarDays,
@@ -134,6 +135,7 @@ export function Dashboard() {
           </div>
         </div>
         <div className="dashboard-insight">
+          <ActionArt kind="insights" className="dashboard-spot" />
           <span className="service-kicker azure">本期值得關注</span>
           <h2>
             {total
@@ -198,7 +200,7 @@ export function Dashboard() {
             data={period === "month" ? monthly(events, dept) : daily(events)}
           />
           <div className="chart-caption">
-            <span>5–9 月為歷史彙總；10 月依呈現事件計算。</span>
+            <span>5–9 月為歷史彙總；10 月依活動紀錄計算。</span>
           </div>
         </Panel>
         <Panel>
@@ -299,7 +301,10 @@ export function Analytics() {
         </div>
         <AdminFilters {...{ dept, setDept, period, setPeriod }} />
       </div>
-      <PowerBiAccess events={events} scope={`${dept} · ${period==='month'?'2026/10/01–10/27':'2026/10/24–10/27'}`}/>
+      <PowerBiAccess
+        events={events}
+        scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}
+      />
       <DataAgent
         events={events}
         scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}

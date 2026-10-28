@@ -1,6 +1,10 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { OfficeIllustration } from "../components/experience/Illustrations";
+import {
+  OfficePlayground,
+  ActionArt,
+  type ActionKind,
+} from "../components/experience/ActionArt";
 import { Brand, ResetButton } from "../components/ui";
 import { tourSteps } from "../data/microsoftDemo";
 export function Landing() {
@@ -11,22 +15,23 @@ export function Landing() {
           <Brand />
         </Link>
         <nav aria-label="主要導覽">
-          <Link to="/demo">行動旅程</Link>
+          <Link to="/guide">行動旅程</Link>
           <Link to="/app/home">員工端</Link>
           <Link to="/admin/dashboard">
             企業端 <ArrowUpRight size={13} />
           </Link>
         </nav>
-        
       </header>
       <main>
         <section className="landing-hero">
           <div className="landing-hero-copy">
-            <span className="service-kicker">員工行動 × Microsoft 生態系</span>
+            <span className="service-kicker">
+              辦公室打怪計畫 · MICROSOFT 生態系
+            </span>
             <h1>
-              辦公室打怪：
+              把減碳，
               <br />
-              <em>碳排放大魔王。</em>
+              變成你的<em>主場。</em>
             </h1>
             <p>
               讓每一趟旅程、每一次回收，
@@ -34,7 +39,7 @@ export function Landing() {
               長成看得見的綠色日常。
             </p>
             <div className="landing-hero-actions">
-              <Link className="btn" to="/demo">
+              <Link className="btn" to="/guide">
                 開始探索 <ArrowRight size={17} />
               </Link>
               <Link className="text-link" to="/app/home">
@@ -50,14 +55,7 @@ export function Landing() {
             </div>
           </div>
           <div className="landing-scene">
-            <span className="scene-caption">
-              青禾辦公室 · 每個人，都有自己的行動起點
-            </span>
-            <OfficeIllustration />
-            <div className="scene-note">
-              <span className="scene-note-dot" />
-              <span>物聯網記錄 · AI 整理 · Teams 陪你減</span>
-            </div>
+            <OfficePlayground />
           </div>
         </section>
         <section className="landing-story">
@@ -72,7 +70,7 @@ export function Landing() {
           <p>
             員工得到回饋，主管看懂數據。
             <br />
-            用一段可操作的範例，認識 Eco-Sensing。
+            從通勤到下班，每一個選擇都有回饋。
           </p>
         </section>
         <div className="scenario-grid">
@@ -80,6 +78,13 @@ export function Landing() {
             <Link className={`scenario ${s.tone}`} key={s.path} to={s.path}>
               <span className="scenario-no">0{i + 1}</span>
               <span className="scenario-service">{s.service}</span>
+              <ActionArt
+                kind={
+                  (["travel", "recycle", "teams", "insights"] as ActionKind[])[
+                    i
+                  ]
+                }
+              />
               <h3>{s.title}</h3>
               <p>
                 {
@@ -127,10 +132,8 @@ export function Landing() {
       </main>
       <footer className="showcase-footer">
         <span>
-          2026/10/27 · 青禾科技（範例）
-          <small>
-            目前使用本機資料；Microsoft 雲端服務與裝置尚未連線。
-          </small>
+          2026/10/27 · 青禾科技
+          <small>目前使用本機資料；Microsoft 雲端服務與裝置尚未連線。</small>
         </span>
         <ResetButton />
       </footer>

@@ -195,7 +195,7 @@ export function IoTFlow() {
         <ArrowRight size={12} />
         <span>個人紀錄</span>
       </div>
-      <small>全部階段為本地預設，未連接真實裝置。</small>
+      <small>全部階段為本機資料，未連接真實裝置。</small>
     </div>
   );
 }

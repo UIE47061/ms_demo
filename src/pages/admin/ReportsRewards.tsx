@@ -217,8 +217,7 @@ export function Reports() {
                   　｜　範圍：{report.dept}
                 </p>
                 <div className="report-disclaimer">
-                  報告草稿 · 本報告使用預設資料，非正式 ESG
-                  揭露。
+                  報告草稿 · 本報告使用預設資料，非正式 ESG 揭露。
                 </div>
                 <h2>
                   01　
@@ -232,7 +231,7 @@ export function Reports() {
                     : report.type === "員工參與摘要"
                       ? "本摘要聚焦團隊參與，鼓勵透過任務累積永續習慣，不依個人排放量判定績效。"
                       : "本期以員工日常行為及智慧感測流程為觀察範圍，彙整廢棄物、電梯、商務差旅及數位能耗四類來源。"}
-                  所有數值均為呈現估算，不代表查證後之企業溫室氣體盤查。
+                  所有數值均為初步估算，不代表查證後之企業溫室氣體盤查。
                 </p>
                 <div className="report-kpis">
                   <div>

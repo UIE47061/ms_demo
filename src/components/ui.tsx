@@ -37,6 +37,22 @@ export function Brand({ light = false }: { light?: boolean }) {
     </div>
   );
 }
+export function SkipLink({ target }: { target: string }) {
+  return (
+    <a
+      className="skip-link"
+      href={`#${target}`}
+      onClick={(event) => {
+        event.preventDefault();
+        const main = document.getElementById(target);
+        main?.focus({ preventScroll: true });
+        main?.scrollIntoView({ block: "start" });
+      }}
+    >
+      跳至主要內容
+    </a>
+  );
+}
 export function Button({
   children,
   onClick,

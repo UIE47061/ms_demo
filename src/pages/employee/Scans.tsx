@@ -186,7 +186,7 @@ export function TravelScan() {
               <span className="service-kicker azure">
                 Document Intelligence → Foundry
               </span>
-              <small>先載入憑證，再看 AI 核算接力範例。</small>
+              <small>先載入憑證，再看 AI 核算流程。</small>
             </div>
           )}
           <input
@@ -238,7 +238,7 @@ export function TravelScan() {
                   token.current++;
                   setBusy(false);
                   lock.current = false;
-                  notify("已取消預設辨識，可重新開始");
+                  notify("已取消欄位預覽，可重新開始");
                 }}
               >
                 取消流程
@@ -332,7 +332,7 @@ export function TravelScan() {
               </label>
             </div>
             <p className="fine-print">
-              收據若未載明起訖站，需自行補填。碳排為呈現數據，不隨里程自動計算，非正式排放係數或官方數據。
+              收據若未載明起訖站，需自行補填。碳排為初步估算，不隨里程自動計算，非正式排放係數或官方數據。
             </p>
           </Panel>
           {error && (

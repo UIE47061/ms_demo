@@ -256,7 +256,7 @@ test("文件式報告設定、個人設定及更多頁面響應式", async ({ pa
   await expect(page.locator(".report-document")).toBeVisible();
   await expect(page.locator(".report-kpis b").first()).toHaveText("615.0");
   await expect(page.locator(".report-document")).toContainText("工程研發部");
-  await page.locator('.toast').waitFor({state:'hidden'});
+  await page.locator(".toast").waitFor({ state: "hidden" });
   await page.screenshot({
     path: "test-results/screenshots/report-desktop.png",
     fullPage: true,

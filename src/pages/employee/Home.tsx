@@ -1,7 +1,8 @@
-import { ArrowRight, ChevronRight, QrCode, ScanLine } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EventList } from "../../components/Events";
 import { TrendChart } from "../../components/charts";
+import { ActionArt } from "../../components/experience/ActionArt";
 import { GrowthCard } from "../../components/experience/Growth";
 import { TeamsShortcut } from "../../components/experience/Microsoft";
 import { Panel, SectionHead, SourceIcon } from "../../components/ui";
@@ -64,7 +65,7 @@ export function EmployeeHome() {
       </section>
       <section className="quick-scans" aria-label="登錄活動">
         <Link to="/app/trash-scan">
-          <QrCode size={22} />
+          <ActionArt kind="recycle" />
           <div>
             <b>掃描垃圾桶 QR</b>
             <span>記錄分類與重量</span>
@@ -72,7 +73,7 @@ export function EmployeeHome() {
           <ChevronRight size={16} />
         </Link>
         <Link to="/app/travel-scan">
-          <ScanLine size={22} />
+          <ActionArt kind="travel" />
           <div>
             <b>掃描差旅憑證</b>
             <span>差旅資訊與估算</span>

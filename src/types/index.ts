@@ -1,6 +1,9 @@
 export type Source = "waste" | "elevator" | "travel" | "digital";
 export type Department =
-  "產品設計部" | "工程研發部" | "營運管理部" | "業務行銷部";
+  | "產品設計部"
+  | "工程研發部"
+  | "營運管理部"
+  | "業務行銷部";
 export interface CarbonEvent {
   id: string;
   employeeId: string;

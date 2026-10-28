@@ -2399,6 +2399,163 @@
 .boss-challenge h2 {
   max-width: 218px;
 }
-.powerbi-access{border:1px solid #e7dfcc;border-radius:10px;background:#fffcf5;padding:24px 26px;margin:0 0 26px}.powerbi-access-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:21px}.powerbi-access-heading h2{font-size:23px;font-weight:530;letter-spacing:-.5px}.powerbi-access-heading p{font-size:11px;color:#8d8a7b;line-height:1.9;margin-top:10px}.powerbi-access-heading .service-kicker{font-size:9px;margin-bottom:8px}.powerbi-access-heading>.btn-secondary{font-size:11px;flex-shrink:0}.bi-export-actions{display:flex;gap:9px;flex-wrap:wrap}.bi-export-actions .btn,.bi-export-actions .btn-secondary{font-size:11px;min-height:37px}.bi-scope{font-size:10px;color:#9b9584;line-height:1.9;margin-top:15px}.bi-setup{border-top:1px solid #e9e3d4;margin-top:19px;padding-top:12px;font-size:11px;color:#8e8878}.bi-setup>summary{cursor:pointer;min-height:28px}.bi-setup-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:32px;padding:17px 0 3px}.bi-setup-grid h3{font-size:12px;color:#746f5f}.bi-setup-grid ol{list-style:decimal;padding-left:17px;font-size:11px;color:#989180;line-height:2;margin:13px 0}.bi-setup-grid label{font-size:11px;color:#8b826e}.bi-setup-grid input{font-size:11px;margin-top:1px}.bi-setup-grid>div>p{font-size:10px;line-height:1.9;color:#a19886;margin-top:15px}.bi-external-links,.bi-url-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:10px}.bi-external-links a{display:inline-flex;gap:5px;align-items:center;color:#927a45}.bi-url-actions .btn-secondary{font-size:11px}.bi-url-error{font-size:10px;color:#a86952;line-height:1.9;margin-top:11px}.bi-setup-grid .text-link{font-size:10px}
-@media(max-width:900px){.powerbi-access-heading{align-items:flex-start;flex-direction:column;gap:17px}.bi-setup-grid{grid-template-columns:1fr;gap:25px}.powerbi-access-heading h2{font-size:21px}}
-@media(max-width:600px){.powerbi-access{padding:20px 16px}.powerbi-access-heading p{font-size:10px}.bi-export-actions{gap:8px}.bi-export-actions>.btn,.bi-export-actions>.btn-secondary{width:100%;min-height:41px;font-size:11px}.bi-scope{font-size:9px}.bi-setup-grid input{font-size:12px;min-height:42px}.bi-url-actions .btn-secondary{min-height:40px}}
+.powerbi-access {
+  border: 1px solid #e7dfcc;
+  border-radius: 10px;
+  background: #fffcf5;
+  padding: 24px 26px;
+  margin: 0 0 26px;
+}
+.powerbi-access-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 21px;
+}
+.powerbi-access-heading h2 {
+  font-size: 23px;
+  font-weight: 530;
+  letter-spacing: -0.5px;
+}
+.powerbi-access-heading p {
+  font-size: 11px;
+  color: #8d8a7b;
+  line-height: 1.9;
+  margin-top: 10px;
+}
+.powerbi-access-heading .service-kicker {
+  font-size: 9px;
+  margin-bottom: 8px;
+}
+.powerbi-access-heading > .btn-secondary {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.bi-export-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.bi-export-actions .btn,
+.bi-export-actions .btn-secondary {
+  font-size: 11px;
+  min-height: 37px;
+}
+.bi-scope {
+  font-size: 10px;
+  color: #9b9584;
+  line-height: 1.9;
+  margin-top: 15px;
+}
+.bi-setup {
+  border-top: 1px solid #e9e3d4;
+  margin-top: 19px;
+  padding-top: 12px;
+  font-size: 11px;
+  color: #8e8878;
+}
+.bi-setup > summary {
+  cursor: pointer;
+  min-height: 28px;
+}
+.bi-setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 32px;
+  padding: 17px 0 3px;
+}
+.bi-setup-grid h3 {
+  font-size: 12px;
+  color: #746f5f;
+}
+.bi-setup-grid ol {
+  list-style: decimal;
+  padding-left: 17px;
+  font-size: 11px;
+  color: #989180;
+  line-height: 2;
+  margin: 13px 0;
+}
+.bi-setup-grid label {
+  font-size: 11px;
+  color: #8b826e;
+}
+.bi-setup-grid input {
+  font-size: 11px;
+  margin-top: 1px;
+}
+.bi-setup-grid > div > p {
+  font-size: 10px;
+  line-height: 1.9;
+  color: #a19886;
+  margin-top: 15px;
+}
+.bi-external-links,
+.bi-url-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-size: 10px;
+}
+.bi-external-links a {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  color: #927a45;
+}
+.bi-url-actions .btn-secondary {
+  font-size: 11px;
+}
+.bi-url-error {
+  font-size: 10px;
+  color: #a86952;
+  line-height: 1.9;
+  margin-top: 11px;
+}
+.bi-setup-grid .text-link {
+  font-size: 10px;
+}
+@media (max-width: 900px) {
+  .powerbi-access-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 17px;
+  }
+  .bi-setup-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .powerbi-access-heading h2 {
+    font-size: 21px;
+  }
+}
+@media (max-width: 600px) {
+  .powerbi-access {
+    padding: 20px 16px;
+  }
+  .powerbi-access-heading p {
+    font-size: 10px;
+  }
+  .bi-export-actions {
+    gap: 8px;
+  }
+  .bi-export-actions > .btn,
+  .bi-export-actions > .btn-secondary {
+    width: 100%;
+    min-height: 41px;
+    font-size: 11px;
+  }
+  .bi-scope {
+    font-size: 9px;
+  }
+  .bi-setup-grid input {
+    font-size: 12px;
+    min-height: 42px;
+  }
+  .bi-url-actions .btn-secondary {
+    min-height: 40px;
+  }
+}

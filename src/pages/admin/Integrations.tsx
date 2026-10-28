@@ -27,9 +27,9 @@ export function Integrations() {
             AI 整理，Teams 陪你減。
           </h2>
           <p>
-            從差旅與回收，到提醒與主管洞察；每一個呈現操作都回到同一份事件與任務狀態。
+            從差旅與回收，到提醒與主管洞察；每一個操作都回到同一份事件與任務狀態。
           </p>
-          <Link className="btn" to="/demo">
+          <Link className="btn" to="/guide">
             體驗四段流程 <ArrowRight size={15} />
           </Link>
         </div>

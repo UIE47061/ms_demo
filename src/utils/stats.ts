@@ -5,7 +5,8 @@ export const n = (value: number, digits = 1) =>
     maximumFractionDigits: digits,
     minimumFractionDigits: digits,
   }).format(value);
-export const dateTime = (s: string) => s.slice(5, 16).replace("T", " ").replace("-", "/");
+export const dateTime = (s: string) =>
+  s.slice(5, 16).replace("T", " ").replace("-", "/");
 export const sum = (
   events: CarbonEvent[],
   field: "emission" | "avoided" = "emission",

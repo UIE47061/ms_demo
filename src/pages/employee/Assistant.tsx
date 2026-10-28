@@ -1,3 +1,4 @@
+import { ActionArt } from "../../components/experience/ActionArt";
 import { ArrowLeft, Check, MessageSquare, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -24,7 +25,8 @@ export function Assistant() {
         <ArrowLeft size={15} />
         返回首頁
       </Link>
-      <div className="page-title">
+      <div className="page-title illustrated-title">
+        <ActionArt kind="teams" />
         <span className="service-kicker teams">MICROSOFT TEAMS</span>
         <h1>工作中，也有綠色提醒。</h1>
         <p>讓日常的小決定，有一個輕鬆的開始。</p>
@@ -53,7 +55,7 @@ export function Assistant() {
                   ? "等你方便時，再休息一下。"
                   : "午休了，讓螢幕也休息一下。"}
             </h2>
-            <p>預設離座 15 分鐘後收到提醒，讓電腦休眠，完成今天的節能任務。</p>
+            <p>離座 15 分鐘的提醒情境，讓電腦休眠，完成今天的節能任務。</p>
             <div className="teams-reward">
               <b>40 碳幣</b>
               <span>60 EXP</span>

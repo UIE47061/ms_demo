@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { Brand, Modal, ResetButton } from "../components/ui";
+import { Brand, Modal, ResetButton, SkipLink } from "../components/ui";
 const adminLinks = [
   ["dashboard", "企業總覽", LayoutDashboard],
   ["analytics", "碳排分析", ChartNoAxesCombined],
@@ -96,9 +96,7 @@ export function AdminLayout() {
   useEffect(() => setMenu(false), [location.pathname]);
   return (
     <div className={`admin-shell ${menu ? "menu-open" : ""}`}>
-      <a className="skip-link" href="#main-content">
-        跳至主要內容
-      </a>
+      <SkipLink target="main-content" />
       <aside
         className="sidebar"
         ref={sidebarRef}
@@ -136,13 +134,13 @@ export function AdminLayout() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <Link className="switch-link" to="/demo">
+          <Link className="switch-link" to="/guide">
             <Play size={16} />
             行動旅程導覽
           </Link>
           <button className="sidebar-help" onClick={() => setHelp(true)}>
             <CircleHelp size={16} />
-            呈現說明
+            使用說明
           </button>
           <Link className="switch-link" to="/app/home">
             <ArrowLeftRight size={16} />
@@ -155,7 +153,6 @@ export function AdminLayout() {
               <b>林沐青</b>
               <small>永續管理員</small>
             </div>
-            
           </div>
         </div>
       </aside>
@@ -185,7 +182,7 @@ export function AdminLayout() {
           </div>
           <div className="toolbar-right">
             <span className="toolbar-demo-date">2026/10/27</span>
-            
+
             <button
               className="icon-btn notification"
               aria-label="查看通知"
@@ -198,6 +195,7 @@ export function AdminLayout() {
         </header>
         <main
           id="main-content"
+          tabIndex={-1}
           className={`admin-main ${location.pathname.endsWith("reports") ? "reports-main" : ""}`}
           key={location.pathname}
         >
@@ -205,13 +203,14 @@ export function AdminLayout() {
         </main>
         <footer className="admin-footer">
           <span>Eco-Sensing</span>
-          <span>基準日 2026/10/27 · 本地預設資料</span>
+          <span>基準日 2026/10/27 · 本機初始資料</span>
         </footer>
       </div>
       {help && (
         <Modal title="關於工作空間" onClose={() => setHelp(false)}>
           <p>
-            青禾科技股份有限公司為虛構公司。本專案使用本機資料，呈現員工行為碳足跡、IoT 流程、減碳任務及企業 ESG 管理。
+            青禾科技股份有限公司為虛構公司。本專案使用本機資料，呈現員工行為碳足跡、IoT
+            流程、減碳任務及企業 ESG 管理。
           </p>
           <p>
             歷史 5–9 月為獨立彙總資料，10
@@ -238,9 +237,7 @@ export function EmployeeLayout() {
   useRouteReset();
   return (
     <div className="employee-backdrop">
-      <a className="skip-link" href="#employee-content">
-        跳至主要內容
-      </a>
+      <SkipLink target="employee-content" />
       <aside className="employee-desktop-note">
         <Link to="/">
           <Brand />
@@ -250,7 +247,7 @@ export function EmployeeLayout() {
           <b>青禾科技股份有限公司</b>
           <p>林沐青 · 產品設計部</p>
         </div>
-        <Link to="/demo" className="switch-link">
+        <Link to="/guide" className="switch-link">
           <Play size={16} />
           行動旅程導覽
         </Link>
@@ -268,7 +265,7 @@ export function EmployeeLayout() {
         <p className="desktop-demo-note">
           資料基準日 2026/10/27
           <br />
-          所有資料均為本地預設。
+          所有資料均為本機資料。
         </p>
       </aside>
       <div className="phone-shell">
@@ -276,10 +273,10 @@ export function EmployeeLayout() {
           <Link to="/" aria-label="返回角色入口">
             <Brand />
           </Link>
-          
         </header>
         <main
           id="employee-content"
+          tabIndex={-1}
           className="employee-main"
           key={location.pathname}
         >
