@@ -1,0 +1,25 @@
+﻿"month_start","source_key","source_name","emission_kg_co2e","avoided_kg_co2e","data_layer","coverage_note","mock_data"
+"2026-05-01","waste","廢棄物",320,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-05-01","elevator","電梯",170,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-05-01","travel","商務差旅",1920,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-05-01","digital","數位能耗",590,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-06-01","waste","廢棄物",300,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-06-01","elevator","電梯",160,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-06-01","travel","商務差旅",1740,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-06-01","digital","數位能耗",570,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-07-01","waste","廢棄物",310,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-07-01","elevator","電梯",150,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-07-01","travel","商務差旅",1810,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-07-01","digital","數位能耗",540,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-08-01","waste","廢棄物",280,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-08-01","elevator","電梯",150,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-08-01","travel","商務差旅",1660,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-08-01","digital","數位能耗",510,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-09-01","waste","廢棄物",270,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-09-01","elevator","電梯",145,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-09-01","travel","商務差旅",1550,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-09-01","digital","數位能耗",495,,"history_summary","全公司歷史月度彙總；未提供部門分布",true
+"2026-10-01","waste","廢棄物",2.52,3.5,"current_events","2026/10/01–10/27 展示事件彙總",true
+"2026-10-01","elevator","電梯",11.4,0,"current_events","2026/10/01–10/27 展示事件彙總",true
+"2026-10-01","travel","商務差旅",530.4,0,"current_events","2026/10/01–10/27 展示事件彙總",true
+"2026-10-01","digital","數位能耗",154,0,"current_events","2026/10/01–10/27 展示事件彙總",true
