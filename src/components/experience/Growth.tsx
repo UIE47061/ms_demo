@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDemo } from "../../store/demo";
 import { growth } from "../../utils/experience";
 import { BossIllustration, PlantIllustration } from "./Illustrations";
-export function GrowthCard() {
+export function GrowthCard({ compact = false }: { compact?: boolean }) {
   const { state } = useDemo();
   const g = growth(state);
   const prev = useRef(g.claimed);
@@ -17,19 +17,20 @@ export function GrowthCard() {
   }, [g.claimed]);
   return (
     <section
-      className={`growth-card ${growing ? "growing" : ""}`}
+      className={`growth-card ${compact ? "growth-compact" : ""} ${growing ? "growing" : ""}`}
       aria-label="我的綠色夥伴"
     >
       <div className="growth-copy">
         <span className="micro-label">我的綠色夥伴</span>
-        <h2>
-          一點行動，
-          <br />
-          長成日常。
-        </h2>
-        <span className="growth-level">Lv.{g.level} 綠色探索家</span>
+        {!compact && <h2>我的綠色夥伴</h2>}
+        <span className="growth-level">
+          Lv.{g.level}
+          {!compact && " 綠色探索家"}
+        </span>
         <div className="growth-exp">
-          <span>{state.exp % 500} / 500 EXP</span>
+          <span className={compact ? "sr-only" : ""}>
+            {state.exp % 500} / 500 EXP
+          </span>
           <div className="progress">
             <i style={{ width: `${(state.exp % 500) / 5}%` }} />
           </div>
@@ -41,7 +42,7 @@ export function GrowthCard() {
           <Coins size={16} />
           <strong>{state.coins}</strong> 碳幣 <ArrowUpRight size={14} />
         </Link>
-        <span data-testid="growth-leaves">
+        <span className={compact ? "sr-only" : ""} data-testid="growth-leaves">
           {g.claimed} / {g.total} 片行動新葉
         </span>
       </div>

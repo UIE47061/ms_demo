@@ -9,7 +9,6 @@ import {
   Gift,
   House,
   LayoutDashboard,
-  Medal,
   Menu,
   MessageSquare,
   Network,
@@ -35,8 +34,7 @@ const adminLinks = [
 const appLinks = [
   ["home", "首頁", House],
   ["footprint", "碳足跡", Activity],
-  ["missions", "i 減碳", Target],
-  ["leaderboard", "排行榜", Medal],
+  ["missions", "任務", Target],
   ["profile", "我的", UserRound],
 ] as const;
 function useRouteReset() {
@@ -234,9 +232,12 @@ export function AdminLayout() {
 }
 export function EmployeeLayout() {
   const location = useLocation();
+  const focused = /\/(travel-scan|trash-scan)$/.test(location.pathname);
   useRouteReset();
   return (
-    <div className="employee-backdrop">
+    <div
+      className={`employee-backdrop employee-ux ${focused ? "scan-focused" : ""}`}
+    >
       <SkipLink target="employee-content" />
       <aside className="employee-desktop-note">
         <Link to="/">
@@ -282,21 +283,25 @@ export function EmployeeLayout() {
         >
           <Outlet />
         </main>
-        <div className="employee-meta">
-          <Link to="/admin/dashboard">
-            <ArrowLeftRight size={13} />
-            企業端
-          </Link>
-          <ResetButton compact />
-        </div>
-        <nav className="bottom-nav" aria-label="員工端導覽">
-          {appLinks.map(([path, label, Icon]) => (
-            <NavLink key={path} to={`/app/${path}`}>
-              <Icon size={21} />
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </nav>
+        {!focused && (
+          <nav className="bottom-nav" aria-label="員工端導覽">
+            {appLinks.map(([path, label, Icon]) => (
+              <NavLink
+                key={path}
+                to={`/app/${path}`}
+                className={
+                  path === "missions" &&
+                  location.pathname.endsWith("leaderboard")
+                    ? "active"
+                    : undefined
+                }
+              >
+                <Icon size={21} />
+                <span>{label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        )}
       </div>
     </div>
   );

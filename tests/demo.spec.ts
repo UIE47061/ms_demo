@@ -33,7 +33,7 @@ test("差旅編輯、重整、跨端同步、任務防重複領獎及重設", as
   await page.goto("/app/missions");
   const mission = page
     .locator(".mission-list .panel")
-    .filter({ hasText: "把旅途，變成綠色足跡" });
+    .filter({ hasText: "登錄一次大眾運輸差旅" });
   await mission.getByRole("button", { name: "領取獎勵" }).click();
   const rewarded = await state(page);
   expect(rewarded.coins).toBe(initial.coins + 80);
@@ -42,11 +42,17 @@ test("差旅編輯、重整、跨端同步、任務防重複領獎及重設", as
   await expect(mission.getByRole("button", { name: "領取獎勵" })).toHaveCount(
     0,
   );
+  await page.goto("/app/profile");
+  await page.getByText("工作空間與資料", { exact: true }).click();
   page.once("dialog", (dialog) => dialog.dismiss());
-  await page.getByRole("button", { name: "重設資料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "重設工作空間資料", exact: true })
+    .click();
   expect((await state(page)).coins).toBe(rewarded.coins);
   page.once("dialog", (dialog) => dialog.accept());
-  await page.getByRole("button", { name: "重設資料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "重設工作空間資料", exact: true })
+    .click();
   expect(await state(page)).toEqual(initial);
 });
 test("垃圾桶五階段、取消重試、確認後只新增一次及獎勵", async ({ page }) => {
@@ -72,7 +78,7 @@ test("垃圾桶五階段、取消重試、確認後只新增一次及獎勵", as
   await page.getByRole("link", { name: "前往領取任務獎勵" }).click();
   const mission = page
     .locator(".mission-list .panel")
-    .filter({ hasText: "分類多一步，地球輕一點" });
+    .filter({ hasText: "完成一次分類回收" });
   await mission.getByRole("button", { name: "領取獎勵" }).click();
   expect((await state(page)).coins).toBe(initial.coins + 50);
 });
@@ -113,7 +119,7 @@ test("企業篩選、設備事件跨端、兌換審核、報告快照與列印",
     .first()
     .click();
   expect((await state(page)).events.length).toBe(initial.events.length + 1);
-  await page.goto("/app/footprint");
+  await page.goto("/app/footprint?view=records");
   await expect(page.getByText("智慧垃圾桶 01・接收事件")).toBeVisible();
   await page.goto("/admin/rewards");
   await page.getByRole("button", { name: "核准", exact: true }).first().click();

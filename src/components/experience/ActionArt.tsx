@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Play, RotateCcw } from "lucide-react";
+import { Play, Recycle, RotateCcw } from "lucide-react";
 import { useDemo } from "../../store/demo";
 import { growth } from "../../utils/experience";
 
@@ -49,11 +49,13 @@ function Drawing({ kind }: { kind: ActionKind }) {
         <path d="M68 66h101l-9 79H78z" fill="#E9F4CD" />
         <path d="M62 56h113v14H62z" fill="#7FBA00" />
         <path d="M91 43h54v13H91z" fill="#93C950" />
-        <path
-          d="m119 91 9 14-8 1m8-1-16 2m29 17-17 1 3-8m-3 8-7-15m-20 11 8-15 5 6m-5-6 18 1"
-          fill="none"
+        <Recycle
+          x="94"
+          y="86"
+          width="48"
+          height="48"
           stroke="#4D7A00"
-          strokeWidth="4"
+          strokeWidth="1.8"
         />
         <g className="scene-bottle" transform="rotate(19 189 65)">
           <path d="M183 28h16v20l8 12v37h-31V60l7-12z" fill="#B4E0EF" />
@@ -61,7 +63,7 @@ function Drawing({ kind }: { kind: ActionKind }) {
           <path d="M176 67h31v17h-31z" fill="#FFFDF8" />
         </g>
         <path
-          d="M34 89c-6-20 5-38 23-42m-5-5 7 4-4 8"
+          d="M34 89c-6-20 5-38 25-43m-7-4 7 4-4 8"
           fill="none"
           stroke="#7FBA00"
           strokeWidth="3"

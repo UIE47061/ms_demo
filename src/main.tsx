@@ -4,4 +4,5 @@ import "./styles/fonts.css";
 import "./styles/index.css";
 import "./styles/experience.css";
 import "./styles/story.css";
+import "./styles/employee-ux.css";
 createRoot(document.getElementById("root")!).render(<App />);

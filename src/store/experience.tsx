@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { clearScanDrafts } from "../utils/scanDraft";
 export const EXPERIENCE_KEY = "eco-sensing-experience-v1";
 interface PresentationState {
   tourActive: boolean;
@@ -48,6 +49,7 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
           setPresentation((s) => ({ ...s, teamsDeferred: deferred })),
         resetVersion,
         resetPresentation: () => {
+          clearScanDrafts();
           setPresentation({ tourActive: false, teamsDeferred: false });
           setResetVersion((v) => v + 1);
         },

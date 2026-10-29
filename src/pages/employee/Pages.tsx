@@ -2,10 +2,14 @@ import { Award, Check, ChevronRight, Leaf, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { DonutChart, TrendChart } from "../../components/charts";
-import { EventList } from "../../components/Events";
 import { BossChallenge } from "../../components/experience/Growth";
 import { PlantIllustration } from "../../components/experience/Illustrations";
 import { TeamsShortcut } from "../../components/experience/Microsoft";
+import {
+  TaskLinks,
+  taskNames,
+  taskRoute,
+} from "../../components/experience/EmployeeActions";
 import {
   Button,
   Empty,
@@ -23,88 +27,173 @@ import {
   sourceMeta,
 } from "../../data/seed";
 import { claimReward, useDemo } from "../../store/demo";
+import type { CarbonEvent } from "../../types";
 import { categories, daily, n, sum } from "../../utils/stats";
 export function Footprint() {
   const { state } = useDemo();
   const [period, setPeriod] = useState("month");
   const [search, setSearch] = useSearchParams();
   const source = search.get("source") || "all";
-  const events = state.events.filter(
-    (e) =>
-      e.employeeId === CURRENT_USER &&
-      (period === "month" || e.date >= "2026-10-24") &&
-      (source === "all" || e.source === source),
-  );
+  const view = search.get("view") === "records" ? "records" : "overview";
+  const [selected, setSelected] = useState<CarbonEvent | null>(null);
+  const events = state.events
+    .filter(
+      (e) =>
+        e.employeeId === CURRENT_USER &&
+        (period === "month" || e.date >= "2026-10-24") &&
+        (source === "all" || e.source === source),
+    )
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const groups = [...new Set(events.map((e) => e.date.slice(0, 10)))];
+  const change = (key: string, value: string) =>
+    setSearch((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set(key, value);
+      return next;
+    });
   return (
     <>
       <div className="page-title">
         <h1>我的碳足跡</h1>
-        <p>排放總計與活動紀錄。</p>
       </div>
-      <div className="segmented">
-        <button
-          className={period === "week" ? "active" : ""}
-          onClick={() => setPeriod("week")}
+      <div className="footprint-filters">
+        <select
+          aria-label="足跡期間"
+          value={period}
+          onChange={(e) => setPeriod(e.target.value)}
         >
-          本週 10/24–10/27
-        </button>
-        <button
-          className={period === "month" ? "active" : ""}
-          onClick={() => setPeriod("month")}
+          <option value="month">本月 · 10/01–10/27</option>
+          <option value="week">本週 · 10/24–10/27</option>
+        </select>
+        <select
+          aria-label="來源分類"
+          value={source}
+          onChange={(e) => change("source", e.target.value)}
         >
-          本月 10 月
-        </button>
+          <option value="all">全部來源</option>
+          {Object.entries(sourceMeta).map(([key, m]) => (
+            <option key={key} value={key}>
+              {m.label}
+            </option>
+          ))}
+        </select>
       </div>
-      <Panel>
-        <span className="muted">累計估算排放</span>
-        <div className="large-number">
-          {n(sum(events))}
-          <small> kg CO₂e</small>
-        </div>
-        <DonutChart data={categories(events)} />
-      </Panel>
-      <div className="notice">
-        <span>
-          另列避免排放 <b>{n(sum(events, "avoided"), 2)} kg CO₂e</b>
-          ，不抵銷上方排放，也不等於碳幣。
-        </span>
-      </div>
-      <Panel>
-        <SectionHead title="每日排放趨勢" subtitle="kg CO₂e · 估算" />
-        <TrendChart data={daily(events)} compact />
-      </Panel>
-      <SectionHead
-        title="活動時間軸"
-        action={
-          <select
-            aria-label="來源分類"
-            value={source}
-            onChange={(e) =>
-              setSearch(
-                e.target.value === "all" ? {} : { source: e.target.value },
-              )
-            }
+      <div className="segmented" aria-label="足跡檢視">
+        {[
+          ["overview", "總覽"],
+          ["records", "紀錄"],
+        ].map(([key, label]) => (
+          <button
+            key={key}
+            aria-pressed={view === key}
+            className={view === key ? "active" : ""}
+            onClick={() => change("view", key)}
           >
-            <option value="all">全部來源</option>
-            {Object.entries(sourceMeta).map(([key, m]) => (
-              <option value={key} key={key}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-        }
-      />
-      <Panel>
-        <EventList
-          events={events.slice().sort((a, b) => b.date.localeCompare(a.date))}
-        />
-      </Panel>
+            {label}
+          </button>
+        ))}
+      </div>
+      {view === "overview" ? (
+        <>
+          <section className="footprint-total">
+            <span>
+              估算排放 ·{" "}
+              {sourceMeta[source as keyof typeof sourceMeta]?.label ||
+                "全部來源"}
+            </span>
+            <div className="large-number">
+              {n(sum(events))}
+              <small> kg CO₂e</small>
+            </div>
+            <DonutChart data={categories(events)} />
+          </section>
+          <div className="avoided-summary">
+            <span>避免排放（另列）</span>
+            <b>{n(sum(events, "avoided"), 2)} kg CO₂e</b>
+          </div>
+          <details className="disclosure">
+            <summary>查看每日趨勢</summary>
+            <TrendChart data={daily(events)} compact />
+          </details>
+          <details className="disclosure">
+            <summary>數據如何計算？</summary>
+            <p>
+              依目前期間與來源的本機活動估算。避免排放不抵銷排放總計，也不等於碳幣。期間截至
+              2026/10/27。
+            </p>
+          </details>
+          <button
+            className="btn-secondary full"
+            onClick={() => change("view", "records")}
+          >
+            查看活動紀錄（{events.length}）
+          </button>
+        </>
+      ) : (
+        <section className="record-groups" aria-label="活動時間軸">
+          {!events.length && (
+            <Empty text="此篩選條件沒有活動，試試其他期間或來源。" />
+          )}
+          {groups.map((day) => (
+            <section key={day}>
+              <h2>{day.replaceAll("-", "/")}</h2>
+              {events
+                .filter((e) => e.date.startsWith(day))
+                .map((e) => (
+                  <button
+                    className="record-button"
+                    key={e.id}
+                    onClick={() => setSelected(e)}
+                  >
+                    <SourceIcon source={e.source} />
+                    <span>
+                      <b>{e.title}</b>
+                      <small>{e.date.slice(11, 16)}</small>
+                    </span>
+                    <strong>
+                      {n(e.emission, 2)}
+                      <small> kg CO₂e</small>
+                    </strong>
+                    <ChevronRight size={14} />
+                  </button>
+                ))}
+            </section>
+          ))}
+        </section>
+      )}
+      {selected && (
+        <Modal title={selected.title} onClose={() => setSelected(null)}>
+          <dl className="detail-list">
+            <div>
+              <dt>時間</dt>
+              <dd>{selected.date.replace("T", " ")}</dd>
+            </div>
+            <div>
+              <dt>來源</dt>
+              <dd>{sourceMeta[selected.source].label}</dd>
+            </div>
+            <div>
+              <dt>估算排放</dt>
+              <dd>{n(selected.emission, 2)} kg CO₂e</dd>
+            </div>
+            <div>
+              <dt>避免排放（另列）</dt>
+              <dd>{n(selected.avoided, 2)} kg CO₂e</dd>
+            </div>
+          </dl>
+          <p>{selected.detail}</p>
+          <small>本機紀錄 · 非正式盤查數據</small>
+        </Modal>
+      )}
     </>
   );
 }
 export function Missions() {
   const { state, setState, notify } = useDemo();
-  const [filter, setFilter] = useState("全部");
+  const [params] = useSearchParams();
+  const [filter, setFilter] = useState(
+    params.get("status") === "reward" ? "可領獎" : "全部",
+  );
   const [selected, setSelected] = useState<string | null>(null);
   const active = missions.find((m) => m.id === selected);
   function status(id: string, target: number) {
@@ -121,21 +210,10 @@ export function Missions() {
   return (
     <>
       <div className="page-title">
-        <h1>i 減碳任務</h1>
-        <p>完成日常行動，累積碳幣與 EXP。</p>
+        <h1>我的任務</h1>
       </div>
       <BossChallenge />
-      <div className="reward-banner">
-        <div>
-          <small>可用碳幣</small>
-          <b>
-            {state.coins} 碳幣{" "}
-            <span>
-              Lv.{Math.floor(state.exp / 500) + 1} · {state.exp} EXP
-            </span>
-          </b>
-        </div>
-      </div>
+      <TaskLinks />
       <div className="filter-chips">
         {["全部", "進行中", "可領獎", "已完成"].map((f) => (
           <button
@@ -150,6 +228,15 @@ export function Missions() {
       <div className="mission-list">
         {missions
           .filter((m) => filter === "全部" || status(m.id, m.target) === filter)
+          .sort((a, b) => {
+            const rank = (id: string, target: number) =>
+              status(id, target) === "可領獎"
+                ? 0
+                : status(id, target) === "進行中"
+                  ? 1
+                  : 2;
+            return rank(a.id, a.target) - rank(b.id, b.target);
+          })
           .map((m) => (
             <Panel key={m.id}>
               <button
@@ -158,14 +245,11 @@ export function Missions() {
               >
                 <SourceIcon source={m.source} />
                 <span>
-                  <small>
-                    {sourceMeta[m.source].label} · {m.difficulty}
-                  </small>
-                  <h3>{m.title}</h3>
+                  <h3>{taskNames[m.id] || m.title}</h3>
                 </span>
                 <ChevronRight size={17} />
               </button>
-              <p>{m.description}</p>
+
               <div className="progress">
                 <i
                   style={{
@@ -177,9 +261,7 @@ export function Missions() {
                 <span>
                   {Math.min(state.progress[m.id] || 0, m.target)} / {m.target}
                 </span>
-                <span>
-                  +{m.coins} 碳幣 · +{m.exp} EXP
-                </span>
+                <span>+{m.coins} 碳幣</span>
               </div>
               {status(m.id, m.target) === "可領獎" ? (
                 <Button className="full" onClick={() => claim(m.id)}>
@@ -190,6 +272,15 @@ export function Missions() {
                   <Check size={15} />
                   已完成並領獎
                 </span>
+              ) : ["transit", "recycle", "power"].includes(m.id) ? (
+                <Link className="btn-secondary task-cta" to={taskRoute(m.id)}>
+                  {m.id === "transit"
+                    ? "去登錄"
+                    : m.id === "recycle"
+                      ? "去回收"
+                      : "處理提醒"}
+                  <ChevronRight size={14} />
+                </Link>
               ) : (
                 <Button
                   secondary
@@ -202,7 +293,7 @@ export function Missions() {
                     notify("任務已完成，現在可領取獎勵");
                   }}
                 >
-                  完成任務
+                  確認完成
                 </Button>
               )}
             </Panel>
@@ -211,8 +302,8 @@ export function Missions() {
       {!missions.some(
         (m) => filter === "全部" || status(m.id, m.target) === filter,
       ) && <Empty text="目前沒有此狀態的任務，試試其他分類。" />}
-      <p className="fine-print">
-        此頁為遊戲激勵機制，完成任務不會新增正式碳排或減碳盤查數值。
+      <p className="fine-print mission-rules">
+        任務獎勵每項限領一次；挑戰進度與碳幣不抵銷排放，排名依行動積分計算。
       </p>
       {active && (
         <Modal title={active.title} onClose={() => setSelected(null)}>
@@ -286,8 +377,10 @@ export function Leaderboard() {
   return (
     <>
       <div className="page-title">
-        <h1>綠色行動排行榜</h1>
-        <p>依減碳行動積分排序。</p>
+        <Link className="text-link" to="/app/missions">
+          ← 返回任務
+        </Link>
+        <h1>行動排行榜</h1>
       </div>
       <div className="segmented">
         {["個人", "部門"].map((k) => (
@@ -343,11 +436,12 @@ export function Leaderboard() {
           </div>
         ))}
       </Panel>
-      <div className="notice">
-        <span>
-          排名依減碳積分，鼓勵參與與學習，不以個人排放量評定績效。週積分使用固定週期比例。
-        </span>
-      </div>
+      <details className="disclosure">
+        <summary>排名如何計算？</summary>
+        <p>
+          依行動積分排序，不以個人排放量評定績效。週積分使用固定週期比例，並非由逐日積分加總。
+        </p>
+      </details>
     </>
   );
 }
@@ -355,7 +449,7 @@ export function Profile() {
   const { state, setState } = useDemo();
   const [modal, setModal] = useState("");
   return (
-    <>
+    <div className="profile-classic">
       <div className="page-title">
         <h1>個人與設定</h1>
       </div>
@@ -369,7 +463,7 @@ export function Profile() {
         <div className="profile-stats">
           <div>
             <b>{state.coins}</b>
-            <small>累積碳幣</small>
+            <small>可用碳幣</small>
           </div>
           <div>
             <b>{state.exp}</b>
@@ -385,7 +479,7 @@ export function Profile() {
         <PlantIllustration leaves={state.claimed.length} />
         <div>
           <h3>你的行動，長成了新葉。</h3>
-          <p>
+          <p data-testid="growth-leaves">
             {state.claimed.length} / {missions.length} 項獎勵已領取
           </p>
           <Link className="text-link" to="/app/missions">
@@ -413,7 +507,7 @@ export function Profile() {
         ))}
       </div>
       <Panel>
-        <Link className="setting-row" to="/app/footprint">
+        <Link className="setting-row" to="/app/footprint?view=records">
           <span>我的活動紀錄</span>
           <ChevronRight size={17} />
         </Link>
@@ -447,11 +541,23 @@ export function Profile() {
           <ChevronRight size={17} />
         </button>
       </Panel>
-      <Panel>
-        <h3>重設範例資料</h3>
-        <p>重設會還原兩端的事件、任務與審核狀態。</p>
+      <details className="disclosure">
+        <summary>工作空間與資料</summary>
+        <Link className="setting-row" to="/admin/dashboard">
+          切換至企業端
+          <ChevronRight size={16} />
+        </Link>
+        <Link className="setting-row" to="/guide">
+          行動旅程導覽
+          <ChevronRight size={16} />
+        </Link>
+        <Link className="setting-row" to="/app/leaderboard">
+          行動排行榜
+          <ChevronRight size={16} />
+        </Link>
+        <p>重設會還原兩端事件、任務與審核狀態。</p>
         <ResetButton />
-      </Panel>
+      </details>
       {modal && (
         <Modal title={modal} onClose={() => setModal("")}>
           <p>員工行為碳足跡 × IoT 感測 × 減碳任務／碳幣 × 企業 ESG 管理。</p>
@@ -460,9 +566,11 @@ export function Profile() {
             2026/10/27。所有人物、事件、排放與辨識結果均為本機初始資料，未連接真實
             API。
           </p>
-          <p>Power BI、Microsoft Teams、Azure AI 皆為未來規劃整合。</p>
+          <p>
+            Teams、Azure AI 尚未連線；Power BI 支援檔案交換，資料不會自動同步。
+          </p>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

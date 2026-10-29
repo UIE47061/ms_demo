@@ -18,6 +18,7 @@ test("四段導覽使用實際共用狀態，Teams 只領獎一次且成長同�
   await expect(
     page.getByRole("heading", { name: "確認旅程資訊" }),
   ).toBeVisible();
+  await page.getByText("AI 處理流程與資料來源", { exact: true }).click();
   await page.getByText("查看資料來源", { exact: false }).first().click();
   await expect(
     page.getByText("Eco-Sensing 本機資料集 · v1 · 2026/10/27"),
@@ -77,8 +78,13 @@ test("導覽可退回與略過，暫緩不發獎，重設清除呈現狀態", as
     page.getByRole("heading", { name: "等你方便時，再休息一下。" }),
   ).toBeVisible();
   await expect(page.locator(".tour-bar")).toBeVisible();
+  await page.goto("/app/profile");
+  await page.getByText("工作空間與資料", { exact: true }).click();
   page.once("dialog", (d) => d.accept());
-  await page.getByRole("button", { name: "重設資料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "重設工作空間資料", exact: true })
+    .click();
+  await page.goto("/app/assistant");
   await expect(page.locator(".tour-bar")).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "午休了，讓螢幕也休息一下。" }),
@@ -121,6 +127,7 @@ test("主管問答隨篩選更新，來源與自訂欄位皆有預設界線", as
   await page.getByRole("button", { name: "讀取憑證資訊" }).click();
   await page.getByLabel("終點").fill("左營");
   await expect(page.locator(".manual-state")).toContainText("人工修改");
+  await page.getByText("AI 處理流程與資料來源", { exact: true }).click();
   await page.locator(".dataset-note summary").click();
   await expect(page.locator(".dataset-note")).toContainText(
     "不宣稱經過 AI 或官方驗證",
@@ -174,9 +181,9 @@ test("新版入口、App、Microsoft 與導覽在四種寬度正常顯示", asyn
   await page.goto("/demo");
   await page.getByRole("button", { name: "開始行動旅程" }).click();
   const cta = await page.locator(".scan-primary").boundingBox();
-  const nav = await page.locator(".bottom-nav").boundingBox();
+  await expect(page.locator(".bottom-nav")).toHaveCount(0);
   const tour = await page.locator(".tour-bar").boundingBox();
-  expect(cta!.y + cta!.height).toBeLessThan(nav!.y);
+  expect(cta!.y + cta!.height).toBeLessThanOrEqual(844);
   expect(cta!.y).toBeGreaterThan(tour!.y + tour!.height);
   expect(
     await page.evaluate(
@@ -197,8 +204,13 @@ test("在掃描結果重設時，也清除頁面暫存步驟", async ({ page }) 
   await expect(
     page.getByRole("heading", { name: "旅程已記錄！" }),
   ).toBeVisible();
+  await page.goto("/app/profile");
+  await page.getByText("工作空間與資料", { exact: true }).click();
   page.once("dialog", (d) => d.accept());
-  await page.getByRole("button", { name: "重設資料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "重設工作空間資料", exact: true })
+    .click();
+  await page.goto("/app/travel-scan");
   await expect(
     page.getByRole("button", { name: "讀取憑證資訊" }),
   ).toBeVisible();

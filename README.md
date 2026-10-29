@@ -30,7 +30,7 @@ npm run preview
 | `/`                   | 產品入口、員工端與企業端          |
 | `/guide`              | 四段手動行動旅程                  |
 | `/app/home`           | 植物、EXP、碳幣、活動與掃描入口   |
-| `/app/footprint`      | 來源篩選、排放趨勢與活動紀錄      |
+| `/app/footprint`      | 總覽／分日紀錄、期間與來源篩選    |
 | `/app/travel-scan`    | 憑證選擇、資訊確認與差旅登錄      |
 | `/app/trash-scan`     | 回收流程、重量確認與入帳          |
 | `/app/missions`       | 任務進度、領獎與碳魔王挑戰        |
@@ -44,6 +44,12 @@ npm run preview
 | `/admin/reports`      | 報告設定、預覽與列印 PDF          |
 | `/admin/rewards`      | 兌換申請審核                      |
 | `/admin/integrations` | Microsoft 服務流程與角色          |
+
+## 手機操作
+
+員工端使用首頁、碳足跡、任務、我的四項底部導覽。排行榜從任務或我的進入；個人頁直接呈現植物、成就與三項個人數據。差旅、回收流程隱藏全站導覽，關閉時可保留或放棄未提交資料；草稿只保留於同一瀏覽器分頁，圖片預覽不保留，提交與重設時清除。
+
+登錄成功不會自動領獎；符合資格時可在完成畫面直接領取，與任務頁共用防重複規則。「我的 → 通知與顯示設定」可調整首頁提醒與摘要；「我的 → 工作空間與資料」可切換企業端、開始導覽或重設資料。
 
 ## 資料與服務
 
@@ -61,7 +67,7 @@ Power BI／Fabric 支援真正的 Excel／CSV 檔案交換。可由分析頁匯�
 - `scripts/`：`npm run export:bi-data` 可重建 CSV。
 - `docs/`：設計系統與主要畫面截圖。
 
-新版畫面：[入口](docs/screenshots/landing-desktop.png)、[員工端](docs/screenshots/app-mobile.png)、[企業總覽](docs/screenshots/dashboard-desktop.png)、[碳排分析](docs/screenshots/analytics-desktop.png)。設計與動畫規則見 [設計系統](docs/DESIGN_SYSTEM.md)。
+新版畫面：[入口](docs/screenshots/landing-desktop.png)、[員工端](docs/screenshots/app-mobile.png)、[企業總覽](docs/screenshots/dashboard-desktop.png)、[碳排分析](docs/screenshots/analytics-desktop.png)。員工頁面：[任務](docs/screenshots/employee-missions.png)、[足跡](docs/screenshots/employee-footprint.png)、[個人](docs/screenshots/employee-profile.png)、[小幫手](docs/screenshots/employee-assistant.png)、[差旅確認](docs/screenshots/employee-travel-confirm.png)、[回收完成](docs/screenshots/employee-recycle-complete.png)。設計與動畫規則見 [設計系統](docs/DESIGN_SYSTEM.md)。
 
 建置產物與測試暫存不納入版本控制；重複試算表輸出與舊版截圖已移除。原始開發規格及清理前的輸出曾備份至 `/private/tmp/eco-sensing-cleanup-20261028.zip`；該檔只用於本機回復，不會發布。
 

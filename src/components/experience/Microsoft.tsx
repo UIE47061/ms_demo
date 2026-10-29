@@ -100,12 +100,11 @@ export function DataAgent({
 }
 export function PersonalAgent() {
   const { state } = useDemo();
-  const [question, setQuestion] = useState(0);
+  const [question, setQuestion] = useState<number | null>(null);
   return (
     <section className="personal-agent">
       <div className="section-head">
-        <h2>問問 Eco 小幫手</h2>
-        <span className="micro-label">預設問題範例</span>
+        <h2>想了解什麼？</h2>
       </div>
       <div className="personal-question-list">
         {personalQuestions.map((q, i) => (
@@ -118,10 +117,15 @@ export function PersonalAgent() {
           </button>
         ))}
       </div>
-      <AnswerPanel
-        answer={personalAnswer(question, state)}
-        events={state.events}
-      />
+      {question !== null && (
+        <AnswerPanel
+          answer={personalAnswer(question, state)}
+          events={state.events}
+        />
+      )}
+      <p className="fine-print">
+        依目前個人活動與任務計算，僅提供以上三個問題。
+      </p>
     </section>
   );
 }

@@ -1,0 +1,805 @@
+/* Employee workspace: one purpose per view, details on demand. */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.employee-ux .employee-header {
+  height: 56px;
+}
+.employee-ux .employee-main {
+  padding: 20px 22px 28px;
+}
+.employee-ux .page-title {
+  margin-bottom: 20px;
+}
+.employee-ux .page-title h1 {
+  font-size: 24px;
+  line-height: 1.4;
+}
+.employee-ux .page-title small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 6px;
+  color: var(--secondary);
+}
+.employee-ux h2 {
+  font-size: 15px;
+  line-height: 1.5;
+}
+.employee-ux .bottom-nav {
+  padding-top: 6px;
+}
+.employee-ux .bottom-nav > a {
+  flex: 1;
+  font-size: 11px;
+  min-height: 48px;
+}
+.employee-ux .segmented {
+  margin: 16px 0 20px;
+}
+.employee-ux .segmented button {
+  min-height: 44px;
+  font-size: 14px;
+}
+.employee-ux .btn,
+.employee-ux .btn-secondary {
+  min-height: 48px;
+  font-size: 14px;
+}
+.employee-ux .text-link {
+  font-size: 13px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.employee-ux .disclosure {
+  border-top: 1px solid var(--border);
+  margin: 0;
+  padding: 0;
+}
+.employee-ux .disclosure > summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 550;
+  padding: 16px 2px;
+  min-height: 52px;
+}
+.employee-ux .disclosure > p {
+  font-size: 13px;
+  line-height: 1.8;
+  padding: 0 2px 16px;
+  color: var(--secondary);
+}
+.employee-ux .disclosure[open] {
+  padding-bottom: 16px;
+}
+.employee-ux button:focus-visible,
+.employee-ux a:focus-visible,
+.employee-ux summary:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+.home-focused .greeting {
+  margin-bottom: 16px;
+}
+.home-focused .greeting h1 {
+  font-size: 23px;
+}
+.home-focused .avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 15px;
+}
+.employee-ux .growth-compact {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  min-height: 116px;
+  padding: 18px 16px 18px 100px;
+  margin: 0 0 24px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+}
+.employee-ux .growth-compact > .plant-art {
+  width: 85px;
+  height: 108px;
+  top: 4px;
+  left: 8px;
+  right: auto;
+}
+.employee-ux .growth-compact .growth-copy {
+  width: auto;
+}
+.employee-ux .growth-compact .micro-label {
+  display: none;
+}
+.employee-ux .growth-compact .growth-level {
+  font-size: 13px;
+  color: #425d37;
+  white-space: nowrap;
+}
+.employee-ux .growth-compact .growth-exp {
+  width: 100%;
+  margin-top: 12px;
+}
+.employee-ux .growth-compact .growth-bottom {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.employee-ux .growth-compact .growth-bottom > a {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  font-size: 12px;
+  gap: 3px;
+  min-height: 44px;
+  max-width: 72px;
+}
+.employee-ux .growth-compact .growth-bottom strong {
+  font-size: 23px;
+}
+.employee-ux .growth-compact .growth-bottom > a > svg {
+  display: none;
+}
+.home-actions h2 {
+  margin-bottom: 12px;
+}
+.employee-ux .home-actions .quick-scans {
+  margin: 0 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.employee-ux .home-actions .quick-scans > a {
+  padding: 10px 12px 14px;
+  gap: 2px;
+  min-height: 130px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.employee-ux .home-actions .quick-scans > a > svg.action-art:first-child {
+  width: 100%;
+  height: 78px;
+  flex-basis: auto;
+}
+.employee-ux .home-actions .quick-scans > a b {
+  font-size: 15px;
+  color: var(--ink);
+}
+.home-next .section-head {
+  margin: 0 !important;
+}
+.next-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+.next-action > div {
+  min-width: 0;
+}
+.next-action b {
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.next-action small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.next-action > span {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--brand);
+}
+.home-footprint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0;
+  font-size: 13px;
+}
+.home-footprint > span {
+  flex: 1;
+}
+.home-footprint small {
+  display: block;
+  color: var(--secondary);
+  font-size: 11px;
+  margin-top: 3px;
+}
+.home-footprint > strong {
+  font-size: 21px;
+  font-weight: 600;
+  text-align: right;
+}
+.home-footprint > strong small {
+  display: inline;
+  font-size: 11px;
+  font-weight: 400;
+}
+.home-reminder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  color: #66558e;
+}
+.home-reminder > span {
+  flex: 1;
+}
+.task-links {
+  display: flex;
+  gap: 18px;
+  margin: -8px 0 12px;
+  font-size: 13px;
+  color: var(--brand);
+}
+.task-links > a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.employee-ux .filter-chips {
+  gap: 4px;
+  margin: 0 0 12px;
+}
+.employee-ux .filter-chips > button {
+  padding: 8px 10px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.employee-ux .mission-list {
+  gap: 0;
+  margin-bottom: 20px;
+}
+.employee-ux .mission-list > .panel {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding: 18px 0;
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+}
+.employee-ux .mission-open {
+  padding: 0;
+  min-height: 44px;
+}
+.employee-ux .mission-open h3 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.employee-ux .mission-open .source-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.employee-ux .mission-list .progress {
+  margin: 12px 0 8px;
+  height: 4px;
+  width: calc(100% - 116px);
+}
+.employee-ux .mission-progress {
+  padding-right: 116px;
+  font-size: 12px;
+  align-items: flex-start;
+  gap: 8px;
+}
+.employee-ux .mission-list .full,
+.employee-ux .task-cta {
+  width: auto;
+  position: absolute;
+  right: 0;
+  bottom: 18px;
+  min-height: 44px;
+  font-size: 13px;
+  padding: 10px 13px;
+}
+.employee-ux .completed-label {
+  font-size: 12px;
+  margin-top: 10px;
+}
+.employee-ux .boss-challenge {
+  margin: 4px 0 12px;
+  padding: 16px;
+}
+.employee-ux .footprint-filters {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 8px;
+}
+.employee-ux .footprint-filters select {
+  min-height: 44px;
+  font-size: 13px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 8px;
+}
+.footprint-total {
+  padding: 4px 0 22px;
+}
+.footprint-total > span {
+  font-size: 13px;
+  color: var(--secondary);
+}
+.footprint-total .large-number {
+  font-size: 40px;
+  margin: 10px 0;
+}
+.employee-ux .footprint-total .donut-wrap {
+  margin-top: 18px;
+  gap: 18px;
+}
+.employee-ux .footprint-total .chart-legend {
+  flex: 1;
+  min-width: 0;
+}
+.employee-ux .footprint-total .chart-legend > div {
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.avoided-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+}
+.avoided-summary b {
+  font-weight: 550;
+}
+.record-groups {
+  margin-top: 12px;
+}
+.record-groups > section > h2 {
+  color: var(--secondary);
+  font-size: 12px;
+  padding: 18px 0 10px;
+}
+.record-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+.record-button > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+.record-button b {
+  display: block;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.6;
+}
+.record-button small {
+  display: block;
+  font-size: 11px;
+  color: var(--secondary);
+  margin-top: 3px;
+}
+.record-button > strong {
+  font-size: 15px;
+  white-space: nowrap;
+  text-align: right;
+  font-weight: 550;
+}
+.employee-ux .profile-card {
+  text-align: left;
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 4px 14px;
+  padding: 0 0 22px !important;
+  border: 0 !important;
+  margin: 0 0 8px !important;
+  background: transparent;
+}
+.employee-ux .profile-card .avatar {
+  grid-row: 1 / 4;
+  width: 54px;
+  height: 54px;
+  font-size: 23px;
+  margin: 0;
+}
+.employee-ux .profile-card h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.employee-ux .profile-card > p {
+  margin: 0;
+  font-size: 12px;
+}
+.employee-ux .profile-card > .status {
+  justify-self: start;
+  margin: 4px 0 0;
+  font-size: 11px;
+}
+.employee-ux .profile-stats {
+  grid-column: 1 / -1;
+  margin: 22px 0 0;
+  padding: 16px 0 0;
+  grid-template-columns: 1fr 1fr;
+  display: grid;
+}
+.employee-ux .profile-stats > div {
+  text-align: left;
+}
+.employee-ux .profile-stats b {
+  font-size: 25px;
+}
+.employee-ux .account-links {
+  border: 0;
+  background: transparent;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.employee-ux .setting-row {
+  min-height: 52px;
+  font-size: 14px;
+}
+.employee-ux .badges {
+  grid-template-columns: repeat(3, 1fr);
+}
+.employee-ux .badges > div {
+  gap: 8px;
+}
+.employee-ux .badges b {
+  font-size: 12px;
+}
+.employee-ux .profile-card + .disclosure .growth-card {
+  margin-bottom: 12px;
+}
+.employee-ux .ranking-summary {
+  background: #eaf2d9;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 18px 0;
+}
+.employee-ux .ranking-row {
+  padding: 15px 0;
+}
+.employee-ux .ranking-row .avatar {
+  display: none;
+}
+.employee-ux .ranking-row b {
+  font-size: 14px;
+}
+.employee-ux .ranking-row small {
+  font-size: 12px;
+}
+.employee-ux .teams-window {
+  margin: 0 0 16px;
+}
+.employee-ux .teams-window > header {
+  padding: 14px;
+}
+.employee-ux .teams-conversation {
+  padding: 16px;
+}
+.employee-ux .teams-adaptive-card {
+  padding: 20px 16px;
+}
+.employee-ux .teams-adaptive-card h2 {
+  font-size: 20px !important;
+}
+.employee-ux .teams-adaptive-card p {
+  font-size: 13px;
+  line-height: 1.8;
+}
+.employee-ux .personal-question-list {
+  display: flex;
+  flex-direction: column;
+}
+.employee-ux .personal-question-list button {
+  text-align: left;
+  min-height: 52px;
+  padding: 14px;
+  font-size: 14px;
+}
+.employee-ux .personal-agent {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.employee-ux .answer-card {
+  font-size: 14px;
+}
+.employee-ux .inline-reward {
+  display: grid;
+  gap: 12px;
+  background: #eaf2d9;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+  font-size: 14px;
+  text-align: center;
+}
+.inline-reward > span {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+}
+.scan-focused .phone-shell {
+  padding-bottom: 24px;
+}
+.scan-focused .employee-header {
+  display: none;
+}
+.scan-focused .employee-main {
+  padding-top: 16px;
+  min-height: 100dvh;
+}
+.employee-ux .scan-close {
+  min-height: 44px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0 0 14px auto;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 13px;
+}
+.scan-focused .employee-main:has(.scan-primary) {
+  padding-bottom: calc(108px + env(safe-area-inset-bottom));
+}
+.scan-focused .employee-main .scan-primary {
+  bottom: max(20px, env(safe-area-inset-bottom));
+  box-shadow: 0 0 0 12px #fcfdf9;
+}
+.scan-focused .receipt-stage {
+  padding: 16px;
+  margin: 18px 0;
+}
+.scan-focused .receipt {
+  max-width: 280px;
+}
+.scan-focused .notice {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 16px 0;
+  padding: 12px;
+}
+.scan-focused .scan-steps {
+  margin-bottom: 16px;
+}
+.scan-focused .scan-steps small {
+  font-size: 12px;
+}
+.scan-focused .form-grid {
+  gap: 18px 12px;
+}
+.scan-focused .form-grid label {
+  font-size: 13px;
+  min-width: 0;
+}
+.scan-focused .form-grid input {
+  min-height: 48px;
+  font-size: 16px;
+  width: 100%;
+}
+.scan-focused .form-grid input[aria-invalid="true"] {
+  border-color: #a33732;
+}
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #a33732;
+  line-height: 1.5;
+}
+.draft-notice {
+  font-size: 12px;
+  padding: 10px 0;
+  color: var(--brand);
+}
+.scan-focused .scan-progress {
+  display: grid;
+  justify-items: center;
+  padding: 40px 12px;
+  gap: 14px;
+  color: var(--brand);
+}
+.scan-focused .scan-progress h2 {
+  font-size: 20px;
+}
+.scan-focused .scan-progress p {
+  font-size: 13px;
+}
+.scan-focused .qr-stage {
+  margin: 16px 0;
+  padding: 30px 0;
+}
+.scan-focused .scan-success {
+  padding-top: 16px;
+}
+.scan-focused .scan-success .disclosure {
+  text-align: left;
+}
+.scan-focused .scan-success h1 {
+  font-size: 26px;
+}
+.scan-focused .scan-success > p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.scan-focused .scan-success .btn,
+.scan-focused .scan-success .btn-secondary {
+  margin-top: 10px;
+}
+.scan-focused .scan-alternatives {
+  margin-bottom: 20px;
+}
+@media (max-width: 360px) {
+  .employee-ux .employee-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .employee-ux .growth-compact {
+    padding-left: 80px;
+    gap: 4px;
+  }
+  .employee-ux .growth-compact > .plant-art {
+    left: 0;
+    width: 76px;
+  }
+  .employee-ux .growth-compact .growth-level {
+    font-size: 12px;
+  }
+  .employee-ux .growth-compact .growth-bottom strong {
+    font-size: 21px;
+  }
+  .employee-ux .footprint-total .donut-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .employee-ux .footprint-total .donut {
+    align-self: center;
+  }
+  .employee-ux .filter-chips > button {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .employee-ux .record-button {
+    gap: 7px;
+  }
+  .employee-ux .record-button .source-icon {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .employee-ux *,
+  .employee-ux *::before,
+  .employee-ux *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.employee-ux .mission-progress {
+  margin-bottom: 0;
+}
+.scan-focused .receipt-stage {
+  min-height: 220px;
+}
+.scan-focused .receipt-compact {
+  padding: 18px;
+}
+.scan-focused .receipt-compact .receipt-route {
+  margin: 24px 0;
+  padding: 0;
+}
+.scan-focused .receipt-compact .receipt-grid {
+  margin: 16px 0;
+}
+.scan-focused .receipt-compact .receipt-grid > span {
+  font-size: 12px;
+}
+.scan-focused .receipt-compact .receipt-grid b {
+  font-size: 13px;
+}
+.scan-focused .receipt-compact .receipt-brand small {
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.scan-focused .receipt-details {
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--secondary);
+}
+.scan-focused .receipt-details summary {
+  padding-top: 12px;
+  cursor: pointer;
+}
+.scan-focused .receipt-details p {
+  line-height: 1.7;
+  margin-top: 10px;
+}
+.scan-focused .receipt-stage img {
+  max-height: 240px;
+}
+
+/* Always-visible challenge and the illustrated personal page. */
+.employee-ux .boss-challenge + .task-links {
+  margin: 12px 0;
+}
+.employee-ux .mission-rules {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--secondary);
+  margin: 20px 0;
+}
+.employee-ux .profile-classic .profile-card {
+  grid-template-columns: 64px 1fr;
+  gap: 4px 17px;
+  margin: 26px 0 30px !important;
+  padding: 0 !important;
+}
+.employee-ux .profile-classic .profile-card .avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 27px;
+}
+.employee-ux .profile-classic .profile-stats {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 24px 0;
+}
+.employee-ux .profile-classic .profile-growth {
+  border: 1px solid #dce7c8;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 0 0 22px;
+}
+.employee-ux .profile-classic .profile-growth .plant-art {
+  width: 106px;
+  height: 128px;
+}
+.employee-ux .profile-classic .profile-growth h3 {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.employee-ux .profile-classic .profile-growth p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.employee-ux .profile-classic .badges {
+  margin: 10px 0 24px;
+}
+.employee-ux .profile-classic > .section-head {
+  margin: 24px 0 12px;
+}
+.employee-ux .profile-classic > .panel:not(.profile-card) {
+  margin: 24px 0;
+}
+@media (max-width: 360px) {
+  .employee-ux .profile-classic .profile-growth {
+    padding: 10px;
+    gap: 8px;
+  }
+  .employee-ux .profile-classic .profile-growth .plant-art {
+    width: 80px;
+  }
+  .employee-ux .profile-classic .profile-growth h3 {
+    font-size: 13px;
+  }
+}

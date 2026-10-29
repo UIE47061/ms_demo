@@ -1,10 +1,8 @@
 import {
-  ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle2,
   Coins,
-  Leaf,
   LoaderCircle,
   QrCode,
   ScanLine,
@@ -16,38 +14,37 @@ import { AiTrace, IoTFlow } from "../../components/experience/Microsoft";
 import { Button, Panel } from "../../components/ui";
 import { BASE_DATE, CURRENT_USER, missions } from "../../data/seed";
 import { TRAVEL_PRESET } from "../../data/microsoftDemo";
+import {
+  InlineReward,
+  ScanExit,
+} from "../../components/experience/EmployeeActions";
+import { readDraft, saveDraft, removeDraft } from "../../utils/scanDraft";
 import { addEvent, useDemo } from "../../store/demo";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 function Receipt() {
   return (
-    <div className="receipt">
+    <div className="receipt receipt-compact">
       <div className="receipt-brand">
-        <span>TH</span> 臺灣高鐵 <small>SAMPLE TICKET</small>
+        <span>TH</span>臺灣高鐵 <small>非有效票券</small>
       </div>
-      <div className="receipt-sub">Eco-Sensing 自製範例憑證 · 非有效票券</div>
       <div className="receipt-route">
-        <b>
-          臺北<small>TAIPEI</small>
-        </b>
-        <ArrowRight size={25} />
-        <b>
-          臺中<small>TAICHUNG</small>
-        </b>
+        <b>臺北</b>
+        <ArrowRight size={22} />
+        <b>臺中</b>
       </div>
       <div className="receipt-grid">
         <span>
           乘車日期<b>2026/10/27</b>
         </span>
         <span>
-          車次 / 座位<b>0613 / 08A</b>
+          票價<b>TWD 700</b>
         </span>
       </div>
-      <div className="receipt-bottom">
-        <span>標準車廂 · 全票</span>
-        <b>TWD 700</b>
-      </div>
-      <div className="barcode" />
-      <div className="receipt-watermark">僅供流程呈現，不具乘車效力</div>
+      <details className="receipt-details">
+        <summary>憑證詳細資訊</summary>
+        <p>車次 0613 · 08A · 標準車廂全票</p>
+        <p>Eco-Sensing 自製範例，僅供流程呈現。</p>
+      </details>
     </div>
   );
 }
@@ -65,11 +62,16 @@ function Steps({ step }: { step: number }) {
 }
 export function TravelScan() {
   const { state, setState, notify } = useDemo();
-  const [step, setStep] = useState(0);
+  const [draft] = useState(() =>
+    readDraft<{ field: typeof TRAVEL_PRESET; step: number; id: string }>(
+      "travel",
+    ),
+  );
+  const [step, setStep] = useState(draft?.field ? Math.min(draft.step, 1) : 0);
   const [busy, setBusy] = useState(false);
   const [traceStage, setTraceStage] = useState(0);
   const [preview, setPreview] = useState("");
-  const [field, setField] = useState({ ...TRAVEL_PRESET });
+  const [field, setField] = useState(draft?.field || { ...TRAVEL_PRESET });
   const manual =
     field.date !== BASE_DATE ||
     field.transport !== "臺灣高鐵" ||
@@ -80,9 +82,27 @@ export function TravelScan() {
     field.emission !== 5.8;
   const [error, setError] = useState("");
   const lock = useRef(false);
-  const operation = useRef(crypto.randomUUID());
+  const operation = useRef(draft?.id || crypto.randomUUID());
   const input = useRef<HTMLInputElement>(null);
   const token = useRef(0);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+  useEffect(() => {
+    if (!error) return;
+    const input = document.querySelector<HTMLInputElement>(
+      "#employee-content input[aria-invalid=true]",
+    );
+    const details = input?.closest("details");
+    if (details) details.open = true;
+    input?.focus();
+  }, [error]);
+  useEffect(() => {
+    if (step === 2) removeDraft("travel");
+    else if (step === 1 || manual)
+      saveDraft("travel", { field, step, id: operation.current });
+    else removeDraft("travel");
+  }, [field, step, manual]);
   useEffect(
     () => () => {
       token.current++;
@@ -126,7 +146,7 @@ export function TravelScan() {
       field.distance === 0
     ) {
       setError(
-        "請填寫有效且不同的起訖站、運具、10/01–10/27 日期與非負數值；里程須大於 0。",
+        "請修正欄位：起訖站須不同，日期限 10/01–10/27，里程須大於 0，其餘數值不得為負。",
       );
       return;
     }
@@ -150,15 +170,27 @@ export function TravelScan() {
   }
   return (
     <>
-      <Link to="/app/home" className="back-link">
-        <ArrowLeft size={16} />
-        返回首頁
-      </Link>
+      <ScanExit
+        dirty={step !== 2 && (step === 1 || manual || !!preview || busy)}
+        save={() =>
+          saveDraft("travel", {
+            field,
+            step: Math.min(step, 1),
+            id: operation.current,
+          })
+        }
+        discard={() => removeDraft("travel")}
+      />
       <div className="page-title">
-        <h1>差旅憑證掃描</h1>
-        <p>選擇憑證、確認資訊，再登錄差旅。</p>
+        <h1>登錄差旅</h1>
+        <small>本機預覽 · 未連接辨識服務</small>
       </div>
       <Steps step={step} />
+      {draft && step < 2 && (
+        <p className="draft-notice" role="status">
+          已恢復未提交資料，圖片預覽不保留。
+        </p>
+      )}
       {step === 0 && (
         <>
           <div className={`receipt-stage ${busy ? "is-scanning" : ""}`}>
@@ -182,12 +214,10 @@ export function TravelScan() {
           {busy ? (
             <AiTrace busy stage={traceStage} />
           ) : (
-            <div className="scan-service-note">
-              <span className="service-kicker azure">
-                Document Intelligence → Foundry
-              </span>
-              <small>先載入憑證，再看 AI 核算流程。</small>
-            </div>
+            <details className="disclosure">
+              <summary>Microsoft AI 處理流程</summary>
+              <AiTrace />
+            </details>
           )}
           <input
             ref={input}
@@ -255,7 +285,10 @@ export function TravelScan() {
           </div>
           <Panel>
             <h2>確認旅程資訊</h2>
-            <AiTrace manual={manual} />
+            <details className="disclosure">
+              <summary>AI 處理流程與資料來源</summary>
+              <AiTrace manual={manual} />
+            </details>
             {manual && (
               <div className="manual-state" role="status">
                 欄位已人工修改／確認，未執行官方係數或里程查核。
@@ -265,72 +298,165 @@ export function TravelScan() {
               <label>
                 日期
                 <input
+                  aria-label="日期"
+                  aria-describedby={error ? "travel-error-date" : undefined}
                   type="date"
+                  aria-invalid={
+                    !!error &&
+                    (field.date < "2026-10-01" || field.date > BASE_DATE)
+                  }
                   value={field.date}
                   min="2026-10-01"
                   max={BASE_DATE}
                   onChange={(e) => setField({ ...field, date: e.target.value })}
                 />
+                {error &&
+                  (field.date < "2026-10-01" || field.date > BASE_DATE) && (
+                    <small id="travel-error-date" className="field-error">
+                      請選擇 10/01–10/27 的日期。
+                    </small>
+                  )}
               </label>
               <label>
                 運具
                 <input
+                  aria-label="運具"
+                  aria-describedby={
+                    error ? "travel-error-transport" : undefined
+                  }
+                  aria-invalid={!!error && !field.transport.trim()}
                   value={field.transport}
                   onChange={(e) =>
                     setField({ ...field, transport: e.target.value })
                   }
                 />
+                {error && !field.transport.trim() && (
+                  <small id="travel-error-transport" className="field-error">
+                    請填寫交通方式。
+                  </small>
+                )}
               </label>
               <label>
                 起點
                 <input
+                  aria-label="起點"
+                  aria-describedby={error ? "travel-error-from" : undefined}
+                  aria-invalid={
+                    !!error &&
+                    (!field.from.trim() ||
+                      field.from.trim() === field.to.trim())
+                  }
                   value={field.from}
                   onChange={(e) => setField({ ...field, from: e.target.value })}
                 />
+                {error &&
+                  (!field.from.trim() ||
+                    field.from.trim() === field.to.trim()) && (
+                    <small id="travel-error-from" className="field-error">
+                      請填寫與終點不同的起點。
+                    </small>
+                  )}
               </label>
               <label>
                 終點
                 <input
+                  aria-label="終點"
+                  aria-describedby={error ? "travel-error-to" : undefined}
+                  aria-invalid={
+                    !!error &&
+                    (!field.to.trim() || field.from.trim() === field.to.trim())
+                  }
                   value={field.to}
                   onChange={(e) => setField({ ...field, to: e.target.value })}
                 />
-              </label>
-              <label>
-                票價（TWD）
-                <input
-                  type="number"
-                  min="0"
-                  value={field.fare}
-                  onChange={(e) =>
-                    setField({ ...field, fare: Number(e.target.value) })
-                  }
-                />
-              </label>
-              <label>
-                里程（km）
-                <input
-                  type="number"
-                  min="0.1"
-                  step="0.1"
-                  value={field.distance}
-                  onChange={(e) =>
-                    setField({ ...field, distance: Number(e.target.value) })
-                  }
-                />
+                {error &&
+                  (!field.to.trim() ||
+                    field.from.trim() === field.to.trim()) && (
+                    <small id="travel-error-to" className="field-error">
+                      請填寫與起點不同的終點。
+                    </small>
+                  )}
               </label>
               <label className="span-2">
                 估算碳排（kg CO₂e・待確認數值）
                 <input
+                  aria-label="估算碳排（kg CO₂e・待確認數值）"
+                  aria-describedby={error ? "travel-error-emission" : undefined}
                   type="number"
                   min="0"
                   step="0.01"
+                  aria-invalid={
+                    !!error &&
+                    (!Number.isFinite(field.emission) || field.emission < 0)
+                  }
                   value={field.emission}
                   onChange={(e) =>
                     setField({ ...field, emission: Number(e.target.value) })
                   }
                 />
+                {error &&
+                  (!Number.isFinite(field.emission) || field.emission < 0) && (
+                    <small id="travel-error-emission" className="field-error">
+                      請填寫非負排放數值。
+                    </small>
+                  )}
               </label>
             </div>
+            <details className="disclosure">
+              <summary>票價與里程</summary>
+              <div className="form-grid">
+                <label>
+                  票價（TWD）
+                  <input
+                    aria-label="票價（TWD）"
+                    aria-describedby={error ? "travel-error-fare" : undefined}
+                    type="number"
+                    min="0"
+                    aria-invalid={
+                      !!error &&
+                      (!Number.isFinite(field.fare) || field.fare < 0)
+                    }
+                    value={field.fare}
+                    onChange={(e) =>
+                      setField({ ...field, fare: Number(e.target.value) })
+                    }
+                  />
+                  {error &&
+                    (!Number.isFinite(field.fare) || field.fare < 0) && (
+                      <small id="travel-error-fare" className="field-error">
+                        票價不得為負數。
+                      </small>
+                    )}
+                </label>
+                <label>
+                  里程（km）
+                  <input
+                    aria-label="里程（km）"
+                    aria-describedby={
+                      error ? "travel-error-distance" : undefined
+                    }
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    aria-invalid={
+                      !!error &&
+                      (!Number.isFinite(field.distance) || field.distance <= 0)
+                    }
+                    value={field.distance}
+                    onChange={(e) =>
+                      setField({ ...field, distance: Number(e.target.value) })
+                    }
+                  />
+                  {error &&
+                    (!Number.isFinite(field.distance) ||
+                      field.distance <= 0) && (
+                      <small id="travel-error-distance" className="field-error">
+                        里程須大於 0。
+                      </small>
+                    )}
+                </label>
+              </div>
+            </details>
             <p className="fine-print">
               收據若未載明起訖站，需自行補填。碳排為初步估算，不隨里程自動計算，非正式排放係數或官方數據。
             </p>
@@ -361,7 +487,10 @@ export function TravelScan() {
             <Check size={40} />
           </div>
           <h1>旅程已記錄！</h1>
-          <AiTrace manual={manual} />
+          <details className="disclosure">
+            <summary>查看處理流程與資料來源</summary>
+            <AiTrace manual={manual} />
+          </details>
           <p>本次排放與任務進度已更新。</p>
           <Panel>
             <span>本次估算排放</span>
@@ -380,10 +509,18 @@ export function TravelScan() {
                 ? "此運具不符合大眾運輸任務，僅登錄排放，不增加任務進度。"
                 : state.claimed.includes("transit")
                   ? "本任務獎勵已領取，不會重複發放。"
-                  : `已推進大眾運輸任務，可至任務頁領取 ${missions[0].coins} 碳幣與 ${missions[0].exp} EXP。`}
+                  : `已完成大眾運輸任務，可領取 ${missions[0].coins} 碳幣。`}
             </span>
           </div>
-          <Link className="btn full" to="/app/footprint">
+          <InlineReward id="transit" />
+          <Link
+            className={
+              state.claimed.includes("transit")
+                ? "btn full"
+                : "btn-secondary full"
+            }
+            to="/app/footprint?view=records"
+          >
             查看碳足跡 <ArrowRight size={17} />
           </Link>
           <Link className="btn-secondary full" to="/app/missions">
@@ -414,13 +551,24 @@ const stages = [
   "碳排入帳待確認",
 ];
 export function TrashScan() {
-  const { setState, notify } = useDemo();
-  const [stage, setStage] = useState(-1);
+  const { state, setState, notify } = useDemo();
+  const [draft] = useState(() =>
+    readDraft<{ stage: number; id: string }>("recycle"),
+  );
+  const [stage, setStage] = useState(draft ? Math.min(draft.stage, 4) : -1);
   const [complete, setComplete] = useState(false);
   const [running, setRunning] = useState(false);
   const lock = useRef(false);
   const token = useRef(0);
-  const id = useRef(crypto.randomUUID());
+  const id = useRef(draft?.id || crypto.randomUUID());
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [complete, running]);
+  useEffect(() => {
+    if (complete) removeDraft("recycle");
+    else if (stage >= 0 && !running)
+      saveDraft("recycle", { stage, id: id.current });
+  }, [stage, running, complete]);
   useEffect(
     () => () => {
       token.current++;
@@ -463,23 +611,22 @@ export function TrashScan() {
   }
   return (
     <>
-      <Link to="/app/home" className="back-link">
-        <ArrowLeft size={16} />
-        返回首頁
-      </Link>
+      <ScanExit
+        dirty={stage >= 0 && !complete}
+        save={() =>
+          saveDraft("recycle", { stage: running ? -1 : stage, id: id.current })
+        }
+        discard={() => removeDraft("recycle")}
+      />
       <div className="page-title">
-        <h1>掃描垃圾桶 QR</h1>
-        <p>預設掃碼並確認回收結果。</p>
+        <h1>掃描回收</h1>
+        <small>本機預覽 · 未連接實體設備</small>
       </div>
-      <div className="notice">
-        <Leaf size={18} />
-        <span>
-          <b>IoT 資料流程</b>
-          <br />
-          沒有連線真實裝置；辨識、秤重與碳排皆為預設預設。
-        </span>
-      </div>
-      <IoTFlow />
+      <details className="disclosure">
+        <summary>裝置與資料流程</summary>
+        <IoTFlow />
+        <p>分類、重量與排放使用預設資料，沒有連線真實裝置。</p>
+      </details>
       {stage === -1 && (
         <>
           <div className="qr-stage">
@@ -497,8 +644,15 @@ export function TrashScan() {
       )}
       {stage >= 0 && !complete && (
         <>
-          <Panel>
-            <h2>回收工作階段</h2>
+          {running && (
+            <div className="scan-progress" role="status">
+              <LoaderCircle className="spin" size={24} />
+              <h2>{stages[stage]}</h2>
+              <p>{stage + 1} / 5</p>
+            </div>
+          )}
+          <details className="disclosure">
+            <summary>查看五個處理階段</summary>
             <div className="process-list">
               {stages.map((s, i) => (
                 <div className={stage >= i ? "active" : ""} key={s}>
@@ -522,7 +676,7 @@ export function TrashScan() {
                 </div>
               ))}
             </div>
-          </Panel>
+          </details>
           {running ? (
             <Button
               secondary
@@ -581,15 +735,21 @@ export function TrashScan() {
             <Check size={40} />
           </div>
           <h1>回收成功，好事發生。</h1>
-          <p>
-            0.12 kg CO₂e 已登錄；0.35 kg 避免排放分開記錄。
-            <br />
-            分類回收任務已更新，獎勵需至任務頁領取。
-          </p>
-          <Link className="btn full" to="/app/missions">
-            前往領取任務獎勵
+          <p>寶特瓶 · 320 g 已登錄</p>
+          <details className="disclosure">
+            <summary>查看排放明細</summary>
+            <p>
+              估算排放 0.12 kg CO₂e；避免排放 0.35 kg CO₂e
+              分開記錄，不互相抵銷。
+            </p>
+          </details>
+          <InlineReward id="recycle" />
+          <Link className="btn-secondary full" to="/app/missions">
+            {state.claimed.includes("recycle")
+              ? "查看任務"
+              : "前往領取任務獎勵"}
           </Link>
-          <Link className="btn-secondary full" to="/app/footprint">
+          <Link className="btn-secondary full" to="/app/footprint?view=records">
             查看活動紀錄
           </Link>
           <Button
@@ -599,6 +759,7 @@ export function TrashScan() {
               id.current = crypto.randomUUID();
               lock.current = false;
               setStage(-1);
+              removeDraft("recycle");
               setComplete(false);
             }}
           >
