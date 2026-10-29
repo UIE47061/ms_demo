@@ -85,11 +85,17 @@ export function PlantIllustration({
     </svg>
   );
 }
-export function BossIllustration({ defeated = false }: { defeated?: boolean }) {
+export function BossIllustration({
+  defeated = false,
+  className = "",
+}: {
+  defeated?: boolean;
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 240 210"
-      className={`boss-art ${defeated ? "defeated" : ""}`}
+      className={`boss-art ${defeated ? "defeated" : ""} ${className}`}
       aria-hidden="true"
     >
       <ellipse cx="120" cy="190" rx="78" ry="9" fill="#223a40" opacity=".08" />

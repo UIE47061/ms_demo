@@ -233,6 +233,14 @@ export function AdminLayout() {
 export function EmployeeLayout() {
   const location = useLocation();
   const focused = /\/(travel-scan|trash-scan)$/.test(location.pathname);
+  useEffect(() => {
+    const theme = document.querySelector('meta[name="theme-color"]');
+    const previous = theme?.getAttribute("content");
+    theme?.setAttribute("content", "#fcfdf9");
+    return () => {
+      if (previous) theme?.setAttribute("content", previous);
+    };
+  }, []);
   useRouteReset();
   return (
     <div

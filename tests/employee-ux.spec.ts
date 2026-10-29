@@ -229,3 +229,46 @@ test("所有員工頁面及展開內容於四種寬度沒有溢出，固定操�
   }
   expect(errors).toEqual([]);
 });
+
+test("員工頂部沒有色條，領獎才播放魔王受擊，減少動態效果時停用", async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date("2026-10-29T01:00:00Z") });
+  await page.goto("/app/missions");
+  await page.clock.pauseAt(new Date("2026-10-29T01:01:00Z"));
+  const header = await page.locator(".employee-header").evaluate((el) => ({
+    border: getComputedStyle(el).borderTopWidth,
+    blur: getComputedStyle(el).backdropFilter,
+  }));
+  expect(header).toEqual({ border: "0px", blur: "none" });
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#fcfdf9");
+  const boss = page.locator(".boss-challenge .boss-art");
+  await expect(boss).not.toHaveClass(/is-hit/);
+  const print = page
+    .locator(".mission-list .panel")
+    .filter({ hasText: "使用雙面列印" });
+  await print.getByRole("button", { name: "領取獎勵" }).click();
+  await expect(boss).toHaveClass(/is-hit/);
+  await expect(page.getByTestId("boss-hp")).toHaveText("83 / 100");
+  await expect(page.locator(".boss-damage")).toHaveText("−17 HP");
+  expect(await boss.evaluate((el) => getComputedStyle(el).animationName)).toBe(
+    "boss-impact",
+  );
+  await page.clock.runFor(700);
+  await expect(boss).not.toHaveClass(/is-hit/);
+  await expect(page.locator(".boss-damage")).toHaveCount(0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const cloud = page
+    .locator(".mission-list .panel")
+    .filter({ hasText: "清理雲端檔案" });
+  await cloud.getByRole("button", { name: "確認完成" }).click();
+  await cloud.getByRole("button", { name: "領取獎勵" }).click();
+  await expect(page.getByTestId("boss-hp")).toHaveText("67 / 100");
+  expect(await boss.evaluate((el) => getComputedStyle(el).animationName)).toBe(
+    "none",
+  );
+  await expect(page.locator(".boss-damage")).toBeHidden();
+  await page.clock.runFor(700);
+  await page.reload();
+  await expect(boss).not.toHaveClass(/is-hit/);
+});

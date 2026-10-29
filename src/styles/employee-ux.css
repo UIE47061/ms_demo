@@ -12,6 +12,10 @@
 }
 .employee-ux .employee-header {
   height: 56px;
+  border-top: 0;
+  background: #fcfdf9;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 .employee-ux .employee-main {
   padding: 20px 22px 28px;
@@ -801,5 +805,81 @@
   }
   .employee-ux .profile-classic .profile-growth h3 {
     font-size: 13px;
+  }
+}
+
+/* One brief reaction per newly claimed reward; no idle animation. */
+.employee-ux .boss-art.is-hit {
+  animation: boss-impact 580ms ease-out both;
+  transform-origin: 50% 65%;
+}
+.employee-ux .boss-damage {
+  position: absolute;
+  right: 28px;
+  top: 96px;
+  z-index: 2;
+  pointer-events: none;
+  color: #925436;
+  background: #fff9ed;
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  animation: boss-damage-rise 650ms ease-out both;
+}
+@keyframes boss-impact {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+    opacity: 0.85;
+    filter: brightness(1);
+  }
+  15% {
+    transform: translateX(-5px) rotate(-5deg);
+    opacity: 0.55;
+    filter: brightness(1.3);
+  }
+  30% {
+    transform: translateX(5px) rotate(5deg);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  45% {
+    transform: translateX(-4px) rotate(-3deg);
+    opacity: 0.6;
+    filter: brightness(1.3);
+  }
+  65% {
+    transform: translateX(3px) rotate(2deg);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  82% {
+    transform: translateX(-1px) rotate(-1deg);
+  }
+}
+@keyframes boss-damage-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .employee-ux .boss-art.is-hit {
+    animation: none;
+  }
+  .employee-ux .boss-damage {
+    display: none;
   }
 }

@@ -52,6 +52,20 @@ export function GrowthCard({ compact = false }: { compact?: boolean }) {
 export function BossChallenge() {
   const { state } = useDemo();
   const g = growth(state);
+  const previous = useRef({ claimed: g.claimed, hp: g.hp });
+  const sequence = useRef(0);
+  const [hit, setHit] = useState<{ id: number; damage: number } | null>(null);
+  useEffect(() => {
+    const before = previous.current;
+    previous.current = { claimed: g.claimed, hp: g.hp };
+    if (g.claimed <= before.claimed || g.hp >= before.hp) {
+      setHit(null);
+      return;
+    }
+    setHit({ id: ++sequence.current, damage: before.hp - g.hp });
+    const timer = setTimeout(() => setHit(null), 650);
+    return () => clearTimeout(timer);
+  }, [g.claimed, g.hp]);
   return (
     <section className="boss-challenge" aria-label="碳魔王挑戰">
       <div>
@@ -76,7 +90,16 @@ export function BossChallenge() {
           {g.claimed} / {g.total} 項獎勵已領取 · 遊戲進度，不抵銷排放
         </small>
       </div>
-      <BossIllustration defeated={g.hp === 0} />
+      <BossIllustration
+        key={`boss-${hit?.id ?? 0}`}
+        defeated={g.hp === 0}
+        className={hit ? "is-hit" : ""}
+      />
+      {hit && (
+        <span key={`damage-${hit.id}`} className="boss-damage" aria-hidden="true">
+          −{hit.damage} HP
+        </span>
+      )}
     </section>
   );
 }
