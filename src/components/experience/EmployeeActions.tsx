@@ -73,7 +73,7 @@ export function ScanExit({
       </button>
       {open && (
         <Modal title="稍後再完成？" onClose={() => setOpen(false)}>
-          <p>可保留本分頁的未提交資料；圖片預覽不會儲存。</p>
+          <p>可保留本分頁的未提交資料；選取的圖片不會儲存。</p>
           <Button
             className="full"
             onClick={() => {

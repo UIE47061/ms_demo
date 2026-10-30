@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, Check, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  PersonalAgent,
-  SimulationLabel,
-} from "../../components/experience/Microsoft";
+import { PersonalAgent } from "../../components/experience/Microsoft";
 import { Button } from "../../components/ui";
 import { useDemo } from "../../store/demo";
 import { useExperience } from "../../store/experience";
@@ -28,7 +25,6 @@ export function Assistant() {
       </Link>
       <div className="page-title">
         <h1>Eco 小幫手</h1>
-        <small>Microsoft Teams · 本機預覽，未連接服務</small>
       </div>
       <div className="segmented" aria-label="小幫手功能">
         {[
@@ -106,7 +102,6 @@ export function Assistant() {
               )}
             </div>
             <footer>
-              <SimulationLabel />
               <details className="disclosure">
                 <summary>服務與獎勵說明</summary>
                 <p>

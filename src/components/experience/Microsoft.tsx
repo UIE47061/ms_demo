@@ -19,9 +19,6 @@ import {
   personalQuestions,
   type DemoAnswer,
 } from "../../utils/experience";
-export function SimulationLabel() {
-  return <span className="simulation-label">本機預覽模式</span>;
-}
 export function AnswerPanel({
   answer,
   events,
@@ -64,13 +61,12 @@ export function DataAgent({
 }) {
   const [question, setQuestion] = useState(0);
   return (
-    <section className="data-agent" aria-label="主管 Data Agent 範例">
+    <section className="data-agent" aria-label="主管 Data Agent">
       <div className="microsoft-section-head">
         <div>
           <span className="service-kicker gold">POWER BI + FABRIC</span>
           <h2>讓數據，回答下一個問題。</h2>
         </div>
-        <SimulationLabel />
       </div>
       <div className="agent-workspace">
         <div className="agent-questions">
@@ -86,8 +82,7 @@ export function DataAgent({
             </button>
           ))}
           <p>
-            預設問題由本地事件計算，非通用 AI。圖表由 Recharts 呈現，非 Power BI
-            嵌入。
+            回答依目前篩選的事件計算；圖表可搭配 Excel、CSV 與 Power BI 分析。
           </p>
         </div>
         <AnswerPanel
@@ -148,7 +143,6 @@ export function AiTrace({
     <section className="ai-trace" aria-label="差旅資訊與估算">
       <div className="trace-heading">
         <span className="service-kicker azure">MICROSOFT AI 接力</span>
-        <SimulationLabel />
       </div>
       <ol>
         {agents.map(({ name, service, Icon }, i) => (
@@ -179,7 +173,7 @@ export function AiTrace({
             或官方里程查核。
             {manual
               ? "目前欄位已由使用者人工確認，數值不宣稱經過 AI 或官方驗證。"
-              : "預設憑證：2026/10/27，臺灣高鐵，臺北 → 臺中，TWD 700，165 km，5.8 kg CO₂e。"}
+              : "憑證資訊：2026/10/27，臺灣高鐵，臺北 → 臺中，TWD 700，165 km，5.8 kg CO₂e。"}
           </p>
         </details>
       )}
@@ -199,7 +193,6 @@ export function IoTFlow() {
         <ArrowRight size={12} />
         <span>個人紀錄</span>
       </div>
-      <small>全部階段為本機資料，未連接真實裝置。</small>
     </div>
   );
 }
@@ -211,7 +204,7 @@ export function TeamsShortcut() {
       </span>
       <div>
         <b>Eco 小幫手在 Teams 等你</b>
-        <small>試試離座提醒與個人問答 · 範例</small>
+        <small>離座提醒與個人問答</small>
       </div>
       <ArrowRight size={16} />
     </Link>

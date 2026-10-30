@@ -21,7 +21,7 @@ test("四段導覽使用實際共用狀態，Teams 只領獎一次且成長同�
   await page.getByText("AI 處理流程與資料來源", { exact: true }).click();
   await page.getByText("查看資料來源", { exact: false }).first().click();
   await expect(
-    page.getByText("Eco-Sensing 本機資料集 · v1 · 2026/10/27"),
+    page.getByText("Eco-Sensing 資料集 · v1 · 2026/10/27"),
   ).toBeVisible();
   await page.getByRole("button", { name: "確認登錄", exact: true }).click();
   await page.getByRole("button", { name: "下一段", exact: true }).click();
@@ -121,7 +121,7 @@ test("主管問答隨篩選更新，來源與自訂欄位皆有預設界線", as
   );
   await page.getByRole("button", { name: /憑證結構化/ }).click();
   await expect(page.locator(".service-detail")).toContainText(
-    "自訂上傳圖片僅本機預覽",
+    "選取的圖片不會用於解析",
   );
   await page.goto("/app/travel-scan");
   await page.getByRole("button", { name: "讀取憑證資訊" }).click();

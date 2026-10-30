@@ -79,7 +79,7 @@ export function Demo() {
         </div>
       </main>
       <footer className="showcase-footer">
-        <span>本機工作空間 · Microsoft 服務尚未連線</span>
+        <span>Eco-Sensing · Microsoft 工作流程</span>
         <Link to="/admin/dashboard">
           直接前往企業端 <ArrowRight size={13} />
         </Link>

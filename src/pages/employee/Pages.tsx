@@ -118,7 +118,7 @@ export function Footprint() {
           <details className="disclosure">
             <summary>數據如何計算？</summary>
             <p>
-              依目前期間與來源的本機活動估算。避免排放不抵銷排放總計，也不等於碳幣。期間截至
+              依目前期間與來源的活動估算。避免排放不抵銷排放總計，也不等於碳幣。期間截至
               2026/10/27。
             </p>
           </details>
@@ -181,8 +181,8 @@ export function Footprint() {
               <dd>{n(selected.avoided, 2)} kg CO₂e</dd>
             </div>
           </dl>
-          <p>{selected.detail}</p>
-          <small>本機紀錄 · 非正式盤查數據</small>
+          <p>{selected.detail.replaceAll("本機", "")}</p>
+          <small>活動紀錄 · 非正式盤查數據</small>
         </Modal>
       )}
     </>
@@ -512,8 +512,8 @@ export function Profile() {
           <ChevronRight size={17} />
         </Link>
         {[
-          { key: "notifications" as const, label: "任務提醒（本機設定）" },
-          { key: "summary" as const, label: "顯示每日摘要（本機設定）" },
+          { key: "notifications" as const, label: "任務提醒" },
+          { key: "summary" as const, label: "顯示每日摘要" },
         ].map((s) => (
           <div className="setting-row" key={s.key}>
             <span>{s.label}</span>
@@ -562,12 +562,13 @@ export function Profile() {
         <Modal title={modal} onClose={() => setModal("")}>
           <p>員工行為碳足跡 × IoT 感測 × 減碳任務／碳幣 × 企業 ESG 管理。</p>
           <p>
-            此工作空間使用本機資料，基準日為
-            2026/10/27。所有人物、事件、排放與辨識結果均為本機初始資料，未連接真實
-            API。
+            資料儲存於目前瀏覽器，基準日為
+            2026/10/27。人物與活動採用內建資料；上傳圖片不會進行文字辨識。
           </p>
           <p>
-            Teams、Azure AI 尚未連線；Power BI 支援檔案交換，資料不會自動同步。
+            目前的 Teams 與 Azure AI
+            流程只更新此工作空間，不會操作外部服務。Power BI
+            支援檔案交換，資料不會自動同步。
           </p>
         </Modal>
       )}

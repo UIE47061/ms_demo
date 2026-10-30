@@ -89,7 +89,7 @@ export function Landing() {
               <p>
                 {
                   [
-                    "拍一張範例車票，看見 AI 接力。",
+                    "從一張車票開始，整理差旅資訊。",
                     "完成分類回收，記錄今天的行動。",
                     "午休提醒一下，節能變得自然。",
                     "從同一份資料，找到下一步。",
@@ -131,10 +131,7 @@ export function Landing() {
         </section>
       </main>
       <footer className="showcase-footer">
-        <span>
-          2026/10/27 · 青禾科技
-          <small>目前使用本機資料；Microsoft 雲端服務與裝置尚未連線。</small>
-        </span>
+        <span>2026/10/27 · 青禾科技</span>
         <ResetButton />
       </footer>
     </div>

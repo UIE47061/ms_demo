@@ -201,18 +201,18 @@ export function AdminLayout() {
         </main>
         <footer className="admin-footer">
           <span>Eco-Sensing</span>
-          <span>基準日 2026/10/27 · 本機初始資料</span>
+          <span>基準日 2026/10/27</span>
         </footer>
       </div>
       {help && (
         <Modal title="關於工作空間" onClose={() => setHelp(false)}>
           <p>
-            青禾科技股份有限公司為虛構公司。本專案使用本機資料，呈現員工行為碳足跡、IoT
+            青禾科技股份有限公司為虛構公司。資料儲存於目前瀏覽器，呈現員工行為碳足跡、IoT
             流程、減碳任務及企業 ESG 管理。
           </p>
           <p>
             歷史 5–9 月為獨立彙總資料，10
-            月由本機紀錄加總。未連接任何真實裝置、認證服務或雲端 API。
+            月由活動紀錄加總。裝置與雲端服務的操作只更新此工作空間，不會控制設備或傳送訊息。
           </p>
         </Modal>
       )}
@@ -222,9 +222,9 @@ export function AdminLayout() {
             智慧垃圾桶 03 電量偏低（18%），建議安排巡檢。
           </div>
           <div className="notice">
-            數位 Eco-Agent 2 目前離線，資料來自本機工作空間。
+            數位 Eco-Agent 2 目前離線，資料來自工作空間。
           </div>
-          <p className="muted">2026/10/27 · 預設異常通知</p>
+          <p className="muted">2026/10/27 · 設備通知</p>
         </Modal>
       )}
     </div>
@@ -271,11 +271,7 @@ export function EmployeeLayout() {
         <Link to="/" className="text-link">
           返回角色入口 <ChevronRight size={13} />
         </Link>
-        <p className="desktop-demo-note">
-          資料基準日 2026/10/27
-          <br />
-          所有資料均為本機資料。
-        </p>
+        <p className="desktop-demo-note">資料基準日 2026/10/27</p>
       </aside>
       <div className="phone-shell">
         <header className="employee-header">

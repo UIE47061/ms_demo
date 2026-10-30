@@ -55,7 +55,7 @@ export function PowerBiAccess({
       setSaved(clean);
       setUrl(clean);
       setError("");
-      notify("報表網址已儲存在本機；開啟時仍需 Microsoft 登入與權限");
+      notify("報表網址已儲存；開啟時仍需 Microsoft 登入與權限");
     } catch {
       setError("此瀏覽器無法儲存網址，請直接在 Power BI 開啟報表。");
     }
@@ -101,7 +101,7 @@ export function PowerBiAccess({
           download
         >
           <Download size={15} />
-          下載初始 Excel 範例
+          下載初始 Excel
         </a>
         <button
           className="btn-secondary"
@@ -114,7 +114,7 @@ export function PowerBiAccess({
       </div>
       <p className="bi-scope">
         目前事件：{scope} · {events.length} 筆。Excel 為初始 56
-        筆範例；需要最新操作資料請下載 CSV。
+        筆活動；需要最新操作資料請下載 CSV。
       </p>
       <details className="bi-setup">
         <summary>匯入步驟與報表網址設定</summary>
@@ -122,7 +122,7 @@ export function PowerBiAccess({
           <div>
             <h3>瀏覽器版 Power BI</h3>
             <ol>
-              <li>下載 Excel 範例，或下載目前事件 CSV。</li>
+              <li>下載 Excel，或下載目前事件 CSV。</li>
               <li>
                 在 Power BI 的工作區新增語意模型，從 Excel／Text-CSV 選取資料。
               </li>
@@ -183,7 +183,7 @@ export function PowerBiAccess({
                     } catch {}
                     setSaved("");
                     setUrl("");
-                    notify("已清除本機報表網址");
+                    notify("已清除報表網址");
                   }}
                 >
                   清除連結

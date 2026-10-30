@@ -1,7 +1,6 @@
 import { ArrowRight, Check, Network } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { SimulationLabel } from "../../components/experience/Microsoft";
 import { services } from "../../data/microsoftDemo";
 import { useDemo } from "../../store/demo";
 export function Integrations() {
@@ -16,7 +15,6 @@ export function Integrations() {
           <h1>從一個行動，到整個工作空間。</h1>
           <p>點選流程節點，看看服務分工與目前操作如何對應。</p>
         </div>
-        <SimulationLabel />
       </div>
       <section className="integration-hero">
         <div>
@@ -85,11 +83,11 @@ export function Integrations() {
               <p>{service.note}</p>
             </div>
           </div>
-          <SimulationLabel />
         </section>
       </div>
       <p className="fine-print">
-        服務名稱用於架構與互動範例，不表示已部署、驗證或獲得 Microsoft 背書。
+        服務名稱用於說明整合架構與互動流程，不表示已部署、驗證或獲得 Microsoft
+        背書。
       </p>
     </>
   );

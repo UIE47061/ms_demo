@@ -165,8 +165,8 @@ test("小幫手先選問題再回答，設定影響首頁，重設清除草稿",
   await page.locator(".personal-question-list button").first().click();
   await expect(page.locator(".personal-agent h3")).toBeVisible();
   await page.goto("/app/profile");
-  await page.getByRole("switch", { name: "顯示每日摘要（本機設定）" }).click();
-  await page.getByRole("switch", { name: "任務提醒（本機設定）" }).click();
+  await page.getByRole("switch", { name: "顯示每日摘要" }).click();
+  await page.getByRole("switch", { name: "任務提醒" }).click();
   await page.goto("/app/home");
   await expect(page.locator(".home-footprint, .home-reminder")).toHaveCount(0);
   await page.goto("/app/travel-scan");
@@ -241,7 +241,10 @@ test("員工頂部沒有色條，領獎才播放魔王受擊，減少動態效�
     blur: getComputedStyle(el).backdropFilter,
   }));
   expect(header).toEqual({ border: "0px", blur: "none" });
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#fcfdf9");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#fcfdf9",
+  );
   const boss = page.locator(".boss-challenge .boss-art");
   await expect(boss).not.toHaveClass(/is-hit/);
   const print = page

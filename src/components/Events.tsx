@@ -41,7 +41,7 @@ export function EventList({
                   {n(e.emission, 2)} <small>kg CO₂e</small>
                 </td>
                 <td>
-                  <span className="status neutral">本機紀錄</span>
+                  <span className="status neutral">活動紀錄</span>
                 </td>
               </tr>
             ))}

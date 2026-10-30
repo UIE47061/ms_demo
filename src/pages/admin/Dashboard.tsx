@@ -21,10 +21,7 @@ import {
 } from "../../components/charts";
 import { PowerBiAccess } from "../../components/experience/PowerBiAccess";
 import { EventList } from "../../components/Events";
-import {
-  DataAgent,
-  SimulationLabel,
-} from "../../components/experience/Microsoft";
+import { DataAgent } from "../../components/experience/Microsoft";
 import { Metric, Panel, SectionHead } from "../../components/ui";
 import { departments, employees, history } from "../../data/seed";
 import { useDemo } from "../../store/demo";
@@ -127,7 +124,6 @@ export function Dashboard() {
             {period === "month"
               ? `較 9 月彙總 ${change <= 0 ? "減少" : "增加"} ${n(Math.abs(change))}%`
               : "10/24–10/27 事件加總"}{" "}
-            · 本機資料
           </p>
           <div className="focus-meta">
             <span>{events.length} 筆事件</span>
@@ -239,7 +235,7 @@ export function Dashboard() {
                 {online}
                 <small> / 8</small>
               </b>
-              <span>設備在線 · 預設狀態</span>
+              <span>設備在線</span>
             </div>
             <span className="status">運作中</span>
           </div>
@@ -373,11 +369,10 @@ export function Analytics() {
             同一份資料，串起 Microsoft 生態系
           </span>
           <h2>從感測、AI 到 Teams，看看每一步。</h2>
-          <p>圖表使用 Recharts 與本機資料，不是真實 Power BI 嵌入。</p>
+
           <Link className="text-link" to="/admin/integrations">
             探索整合流程 <ArrowRight size={14} />
           </Link>
-          <SimulationLabel />
         </div>
       </Panel>
     </>

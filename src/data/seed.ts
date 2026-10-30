@@ -141,7 +141,7 @@ export function createSeed(): DemoState {
           ? "臺北 → 臺中・估算"
           : source === "waste"
             ? "回收物 320 g・估算"
-            : "系統本機紀錄",
+            : "系統活動紀錄",
       mock: true as const,
     };
   });

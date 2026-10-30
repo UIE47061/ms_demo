@@ -21,7 +21,7 @@ test("Power BI 下載使用目前篩選快照並保留數值", async ({ page }) 
   expect(csv).not.toContain("工程研發部");
   expect(csv).toContain(String(scoped[0].emission));
   const excel = page.waitForEvent("download");
-  await page.getByRole("link", { name: "下載初始 Excel 範例" }).click();
+  await page.getByRole("link", { name: "下載初始 Excel" }).click();
   const x = await excel;
   const bytes = await fs.readFile((await x.path())!);
   expect(bytes.subarray(0, 2).toString()).toBe("PK");

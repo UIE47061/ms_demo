@@ -91,10 +91,10 @@ test("上傳僅預覽、辨識取消後可重試、表單驗證", async ({ page 
       '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="green"/></svg>',
     ),
   });
-  await expect(page.getByText(/此圖片僅供本機預覽/)).toBeVisible();
-  await page.getByRole("button", { name: "載入預設憑證資訊" }).click();
+  await expect(page.getByText(/選取的圖片不會用於解析/)).toBeVisible();
+  await page.getByRole("button", { name: "載入憑證資訊" }).click();
   await page.getByRole("button", { name: "取消流程" }).click();
-  await page.getByRole("button", { name: "載入預設憑證資訊" }).click();
+  await page.getByRole("button", { name: "載入憑證資訊" }).click();
   await expect(
     page.getByRole("heading", { name: "確認旅程資訊" }),
   ).toBeVisible();
@@ -269,7 +269,7 @@ test("文件式報告設定、個人設定及更多頁面響應式", async ({ pa
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app/profile");
-  const toggle = page.getByRole("switch", { name: "任務提醒（本機設定）" });
+  const toggle = page.getByRole("switch", { name: "任務提醒" });
   await expect(toggle).toHaveAttribute("aria-checked", "true");
   await toggle.click();
   await page.reload();

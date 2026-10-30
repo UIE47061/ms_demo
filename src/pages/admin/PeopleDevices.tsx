@@ -230,7 +230,7 @@ export function People() {
             </div>
             <div>
               <dt>資料類型</dt>
-              <dd>本機資料彙總</dd>
+              <dd>資料彙總</dd>
             </div>
           </dl>
         </Modal>
@@ -277,7 +277,7 @@ export function Devices() {
         </div>
         <span className="outlined-tag">
           <Radio size={15} />
-          IoT 資料流程 · 未連接裝置
+          IoT 資料流程
         </span>
       </div>
       <div className="device-summary">
@@ -386,7 +386,7 @@ export function Devices() {
               <dd>{device.id.toUpperCase()}</dd>
             </div>
             <div>
-              <dt>示意位置</dt>
+              <dt>設備位置</dt>
               <dd>{device.location}</dd>
             </div>
             <div>
@@ -406,11 +406,11 @@ export function Devices() {
           </dl>
           <div className="location-demo">
             <MapPin size={18} />
-            <span>設備位置（示意）</span>
+            <span>設備位置</span>
             <b>{device.location}</b>
           </div>
           <p className="fine-print">
-            此設備無真實連線。本機紀錄歸屬林沐青／產品設計部，用於呈現跨端同步。
+            活動歸屬林沐青／產品設計部，可於個人足跡及企業總覽查看。
           </p>
           <Button
             className="full"

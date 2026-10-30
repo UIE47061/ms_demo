@@ -43,7 +43,6 @@ function Receipt() {
       <details className="receipt-details">
         <summary>憑證詳細資訊</summary>
         <p>車次 0613 · 08A · 標準車廂全票</p>
-        <p>Eco-Sensing 自製範例，僅供流程呈現。</p>
       </details>
     </div>
   );
@@ -183,32 +182,27 @@ export function TravelScan() {
       />
       <div className="page-title">
         <h1>登錄差旅</h1>
-        <small>本機預覽 · 未連接辨識服務</small>
       </div>
       <Steps step={step} />
       {draft && step < 2 && (
         <p className="draft-notice" role="status">
-          已恢復未提交資料，圖片預覽不保留。
+          已恢復未提交資料，選取的圖片不保留。
         </p>
       )}
       {step === 0 && (
         <>
           <div className={`receipt-stage ${busy ? "is-scanning" : ""}`}>
-            {preview ? (
-              <img src={preview} alt="你選擇的圖片，僅本機預覽" />
-            ) : (
-              <Receipt />
-            )}
+            {preview ? <img src={preview} alt="選取的憑證圖片" /> : <Receipt />}
             {busy && <div className="scan-line" />}
           </div>
           <div className="notice">
             <ScanLine size={18} />
             <span>
-              <b>憑證資訊預覽</b>
+              <b>憑證資訊</b>
               <br />
               {preview
-                ? "此圖片僅供本機預覽。下一步將載入預設高鐵範例，並非此圖片的辨識結果。"
-                : "使用自製高鐵範例憑證，載入對應的預設結果。未使用真實 OCR。"}
+                ? "選取的圖片不會用於解析；下一步載入高鐵憑證資料，請自行核對欄位。"
+                : "載入高鐵憑證資料後，請核對日期、起訖站與交通方式。"}
             </span>
           </div>
           {busy ? (
@@ -246,20 +240,16 @@ export function TravelScan() {
             ) : (
               <ScanLine size={18} />
             )}{" "}
-            {busy
-              ? "正在整理憑證…"
-              : preview
-                ? "載入預設憑證資訊"
-                : "讀取憑證資訊"}
+            {busy ? "正在整理憑證…" : preview ? "載入憑證資訊" : "讀取憑證資訊"}
           </Button>
           <div className="scan-alternatives">
             <button disabled={busy} onClick={() => input.current?.click()}>
               <Upload size={15} />
-              選擇本機圖片預覽
+              選擇憑證圖片
             </button>
             {preview && (
               <button disabled={busy} onClick={() => setPreview("")}>
-                改用範例憑證
+                使用高鐵憑證
               </button>
             )}
             {busy && (
@@ -268,7 +258,7 @@ export function TravelScan() {
                   token.current++;
                   setBusy(false);
                   lock.current = false;
-                  notify("已取消欄位預覽，可重新開始");
+                  notify("已取消，可重新開始");
                 }}
               >
                 取消流程
@@ -281,7 +271,7 @@ export function TravelScan() {
         <>
           <div className="notice">
             <CheckCircle2 size={18} />
-            <span>已載入預設範例結果。請檢查並修改欄位後登錄。</span>
+            <span>請確認旅程資訊，必要時修改後再登錄。</span>
           </div>
           <Panel>
             <h2>確認旅程資訊</h2>
@@ -620,12 +610,10 @@ export function TrashScan() {
       />
       <div className="page-title">
         <h1>掃描回收</h1>
-        <small>本機預覽 · 未連接實體設備</small>
       </div>
       <details className="disclosure">
         <summary>裝置與資料流程</summary>
         <IoTFlow />
-        <p>分類、重量與排放使用預設資料，沒有連線真實裝置。</p>
       </details>
       {stage === -1 && (
         <>
@@ -634,7 +622,7 @@ export function TrashScan() {
               <QrCode size={150} strokeWidth={1.2} />
             </div>
             <p>青禾辦公室 3F · 智慧垃圾桶 01</p>
-            <small>將 QR Code 對準框內（示意）</small>
+            <small>將 QR Code 對準框內</small>
           </div>
           <Button className="full scan-primary" onClick={scan}>
             <ScanLine size={18} />
@@ -686,7 +674,7 @@ export function TrashScan() {
                 setStage(-1);
                 setRunning(false);
                 lock.current = false;
-                notify("已取消預設掃描");
+                notify("已取消掃描");
               }}
             >
               取消掃描

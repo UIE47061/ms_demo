@@ -35,7 +35,7 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
     expect(failures, `載入 ${path} 的資源與執行錯誤`).toEqual([]);
     await expect(page.locator("main h1").first()).toBeVisible();
     await expect(page.locator("body")).not.toContainText(
-      /\bDemo\b|\bMock\b|示範|模擬|展示/i,
+      /\bDemo\b|\bMock\b|示範|模擬|展示|示意|範例|本機|未連接/i,
     );
   }
   await page.goto(`${baseURL}#/admin/analytics`);
@@ -43,7 +43,7 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
   await expect(
     page.getByRole("heading", { name: "碳排分析", exact: true }),
   ).toBeVisible();
-  const workbook = page.getByRole("link", { name: "下載初始 Excel 範例" });
+  const workbook = page.getByRole("link", { name: "下載初始 Excel" });
   await expect(workbook).toHaveAttribute(
     "href",
     new URL("bi/Eco-Sensing-PowerBI-Seed.xlsx", baseURL).pathname,

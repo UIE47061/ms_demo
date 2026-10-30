@@ -11,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { SimulationLabel } from "../../components/experience/Microsoft";
 import { Button, Metric, Panel, SectionHead } from "../../components/ui";
 import { departments, employees, history, sourceMeta } from "../../data/seed";
 import { useDemo } from "../../store/demo";
@@ -77,7 +76,7 @@ export function Reports() {
     setStage(3);
     lock.current = false;
     setReport(snapshot);
-    notify("範例報告已生成，可預覽或列印另存 PDF");
+    notify("報告已生成，可檢視或列印另存 PDF");
   }
   return (
     <>
@@ -85,10 +84,6 @@ export function Reports() {
         <div>
           <h1>ESG 報告</h1>
           <p>設定報告範圍，檢視摘要並匯出 PDF。</p>
-        </div>
-        <div>
-          <span className="outlined-tag">AI 生成流程示意</span>
-          <SimulationLabel />
         </div>
       </div>
       <div className="report-workspace">
@@ -159,13 +154,7 @@ export function Reports() {
                       <span>
                         {s}
                         <small className="report-service">
-                          {
-                            [
-                              "Fabric 資料彙整示意",
-                              "Foundry 欄位校驗示意",
-                              "AI 摘要流程示意",
-                            ][i]
-                          }
+                          {["資料彙整", "欄位整理", "摘要整理"][i]}
                         </small>
                       </span>
                     </span>
@@ -217,10 +206,10 @@ export function Reports() {
                   　｜　範圍：{report.dept}
                 </p>
                 <div className="report-disclaimer">
-                  報告草稿 · 本報告使用預設資料，非正式 ESG 揭露。
+                  報告草稿 · 供內部檢視，非正式 ESG 揭露。
                 </div>
                 <h2>
-                  01　
+                  01
                   {report.type === "員工參與摘要"
                     ? "員工參與概況"
                     : "永續表現摘要"}
@@ -302,9 +291,8 @@ export function Reports() {
                 <p>
                   {report.month === "2026-10"
                     ? "本月數值由目前事件快照計算；後續新增事件需重新生成報告。"
-                    : "歷史月份為獨立預設彙總，部門分布使用等比例示意。避免排放未收錄，顯示 0。"}
-                  未使用官方排放係數，亦未連接 Power BI、Azure AI、Teams 或真實
-                  IoT。此報告不應作為法規申報或對外揭露依據。
+                    : "歷史月份為獨立彙總，部門分布依等比例分配。避免排放未收錄，顯示 0。"}
+                  數值尚未經官方係數核驗。此報告不應作為法規申報或對外揭露依據。
                 </p>
                 <div className="report-bottom">
                   Eco-Sensing · 資料基準日 2026/10/27{" "}
@@ -339,7 +327,7 @@ export function Rewards() {
         r.id === id && r.status === "待審核" ? { ...r, status } : r,
       ),
     }));
-    notify(`兌換申請${status}，範例狀態已儲存`);
+    notify(`兌換申請${status}，狀態已儲存`);
   }
   return (
     <>
@@ -350,7 +338,7 @@ export function Rewards() {
         </div>
         <span className="outlined-tag">
           <Gift size={15} />
-          碳幣為範例激勵，無實際金流
+          碳幣獎勵
         </span>
       </div>
       <div className="metrics-grid three">
@@ -373,7 +361,7 @@ export function Rewards() {
           value="12"
           unit="人"
           icon={<Target size={18} />}
-          change="涵蓋全部 4 個範例部門"
+          change="涵蓋全部 4 個部門"
         />
       </div>
       <Panel>
@@ -476,7 +464,7 @@ export function Rewards() {
             碳幣、EXP
             與積分用於鼓勵參與。任務獎勵不會折抵排放，不等同碳權，也不作為正式盤查依據。
           </p>
-          <span className="status">本機審核 · 不涉及付款或履約</span>
+          <span className="status">申請審核</span>
         </Panel>
       </div>
     </>
