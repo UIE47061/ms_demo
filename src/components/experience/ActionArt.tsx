@@ -3,10 +3,37 @@ import { Play, Recycle, RotateCcw } from "lucide-react";
 import { useDemo } from "../../store/demo";
 import { growth } from "../../utils/experience";
 
-export type ActionKind = "travel" | "recycle" | "teams" | "insights";
+export type ActionKind =
+  | "outlook"
+  | "travel"
+  | "recycle"
+  | "agent"
+  | "teams"
+  | "insights";
 const ink = "#203D32";
 
 function Drawing({ kind }: { kind: ActionKind }) {
+  if (kind === "outlook")
+    return (
+      <>
+        <rect x="42" y="38" width="159" height="115" rx="9" fill="#FFFDF8" />
+        <path d="M42 67h159" stroke="#8EB9D6" />
+        <rect x="42" y="38" width="159" height="29" rx="8" fill="#176C9A" />
+        <path d="M76 26v24m90-24v24" stroke="#203D32" strokeWidth="5" />
+        <rect
+          x="61"
+          y="83"
+          width="120"
+          height="50"
+          rx="5"
+          fill="#E6F0F8"
+          stroke="none"
+        />
+        <path d="M72 99h52m-52 16h33" stroke="#397DA8" />
+        <circle cx="172" cy="126" r="23" fill="#FFCF59" />
+        <path d="m162 126 7 7 13-15" fill="none" strokeWidth="3" />
+      </>
+    );
   if (kind === "travel")
     return (
       <>
@@ -72,7 +99,7 @@ function Drawing({ kind }: { kind: ActionKind }) {
         <path d="m32 124 5 5 9-10" fill="none" />
       </>
     );
-  if (kind === "teams")
+  if (kind === "teams" || kind === "agent")
     return (
       <>
         <rect x="33" y="49" width="163" height="94" rx="9" fill="#FFFDF8" />
@@ -80,13 +107,13 @@ function Drawing({ kind }: { kind: ActionKind }) {
         <path d="M19 144h190l-12 12H31z" fill="#B3A5D4" />
         <path
           d="M111 81a18 18 0 1 0 20 25 20 20 0 0 1-20-25"
-          fill="#7060AA"
+          fill={kind === "agent" ? "#397DA8" : "#7060AA"}
           stroke="none"
         />
         <g className="scene-notification">
           <path
             d="M135 14h80a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10h-55l-14 13V74h-11a10 10 0 0 1-10-10V24a10 10 0 0 1 10-10z"
-            fill="#7060AA"
+            fill={kind === "agent" ? "#397DA8" : "#7060AA"}
           />
           <path
             d="m147 43 9 9 20-21"

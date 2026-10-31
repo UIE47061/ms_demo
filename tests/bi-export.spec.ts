@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import fs from "node:fs/promises";
 test("Power BI 下載使用目前篩選快照並保留數值", async ({ page }) => {
   await page.goto("/admin/analytics");
+  await page.getByLabel("檢視身分").selectOption("administrator");
   await page.getByLabel("部門篩選", { exact: true }).selectOption("產品設計部");
   await page.getByLabel("日期範圍").selectOption("week");
   const current = await page.evaluate(() =>
@@ -38,6 +39,9 @@ test("報表網址可設定、重整保留並直接開啟，不接受任意網�
   await page.getByRole("button", { name: "儲存報表網址" }).click();
   await expect(
     page.getByRole("link", { name: "開啟已設定的 Power BI 報表" }),
+  ).toHaveAttribute("href", url);
+  await expect(
+    page.getByRole("link", { name: "前往 Power BI" }),
   ).toHaveAttribute("href", url);
   await page.reload();
   await expect(

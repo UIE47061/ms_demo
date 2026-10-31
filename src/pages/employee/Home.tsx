@@ -1,5 +1,6 @@
 import { ChevronRight, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CalendarTripCard } from "../../components/experience/CalendarTrip";
 import { GrowthCard } from "../../components/experience/Growth";
 import { ActionArt } from "../../components/experience/ActionArt";
 import {
@@ -53,7 +54,9 @@ export function EmployeeHome() {
             全部任務
           </Link>
         </div>
-        {mission ? (
+        {presentation.tripStatus === "pending" ? (
+          <CalendarTripCard compact />
+        ) : mission ? (
           <Link
             className="next-action"
             to={ready ? "/app/missions?status=reward" : taskRoute(mission.id)}
@@ -75,6 +78,16 @@ export function EmployeeHome() {
           </p>
         )}
       </section>
+      <Link className="home-assistant-link" to="/app/assistant">
+        <MessageSquare size={16} />
+        問問 Eco 小幫手
+        <ChevronRight size={14} />
+      </Link>
+      {presentation.tripStatus !== "pending" && (
+        <Link className="text-link" to="/app/trips">
+          查看 Outlook 行程 →
+        </Link>
+      )}
       {state.settings.summary && (
         <Link to="/app/footprint" className="home-footprint">
           <span>
@@ -90,7 +103,7 @@ export function EmployeeHome() {
       {state.settings.notifications &&
         !state.claimed.includes("power") &&
         !presentation.teamsDeferred && (
-          <Link to="/app/assistant" className="home-reminder">
+          <Link to="/agent" className="home-reminder">
             <MessageSquare size={17} />
             <span>節能提醒待處理</span>
             <ChevronRight size={15} />

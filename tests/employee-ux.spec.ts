@@ -160,7 +160,6 @@ test("足跡篩選同時套用總覽與分日紀錄，可開啟活動詳情", as
 
 test("小幫手先選問題再回答，設定影響首頁，重設清除草稿", async ({ page }) => {
   await page.goto("/app/assistant");
-  await page.getByRole("button", { name: "問答", exact: true }).click();
   await expect(page.locator(".personal-agent .agent-answer")).toHaveCount(0);
   await page.locator(".personal-question-list button").first().click();
   await expect(page.locator(".personal-agent h3")).toBeVisible();

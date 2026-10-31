@@ -22,6 +22,9 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
     "/app/travel-scan",
     "/app/trash-scan",
     "/app/assistant",
+    "/app/trips",
+    "/agent",
+    "/admin/alerts",
     "/admin/dashboard",
     "/admin/analytics",
     "/admin/people",
@@ -41,8 +44,9 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
   await page.goto(`${baseURL}#/admin/analytics`);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "碳排分析", exact: true }),
+    page.getByRole("heading", { name: "主管洞察", exact: true }),
   ).toBeVisible();
+  await page.getByLabel("檢視身分").selectOption("administrator");
   const workbook = page.getByRole("link", { name: "下載初始 Excel" });
   await expect(workbook).toHaveAttribute(
     "href",
@@ -89,6 +93,9 @@ test("場景可重播、沒有自動入帳，減少動態效果偏好會停止�
       "/guide",
       "/app/home",
       "/app/assistant",
+      "/app/trips",
+      "/agent",
+      "/admin/alerts",
       "/admin/dashboard",
     ]) {
       await page.goto(`${baseURL}#${path}`);

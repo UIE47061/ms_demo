@@ -11,9 +11,11 @@ export function TourFrame({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const active =
     presentation.tourActive && !["/guide", "/demo"].includes(location.pathname);
-  const step = tourSteps.findIndex((s) => s.path === location.pathname);
+  const step = tourSteps.findIndex(
+    (s) => s.path.split("?")[0] === location.pathname,
+  );
   function next() {
-    if (step === 3) {
+    if (step === tourSteps.length - 1) {
       setTour(false);
       notify("行動旅程已完成，可繼續自由瀏覽");
     } else navigate(tourSteps[Math.max(0, step + 1)].path);
@@ -23,7 +25,10 @@ export function TourFrame({ children }: { children: ReactNode }) {
       {active && (
         <aside className="tour-bar" aria-label="行動旅程導覽">
           <Link to="/guide" className="tour-brand">
-            行動導覽 <span>{step < 0 ? "自由瀏覽" : `${step + 1} / 4`}</span>
+            行動導覽{" "}
+            <span>
+              {step < 0 ? "自由瀏覽" : `${step + 1} / ${tourSteps.length}`}
+            </span>
           </Link>
           <nav aria-label="旅程步驟">
             {tourSteps.map((s, i) => (
@@ -46,13 +51,17 @@ export function TourFrame({ children }: { children: ReactNode }) {
             >
               <ArrowLeft size={15} />
             </button>
-            {step >= 0 && step < 3 && (
+            {step >= 0 && step < tourSteps.length - 1 && (
               <button className="tour-skip" onClick={next}>
                 略過
               </button>
             )}
             <button className="tour-next" onClick={next}>
-              {step === 3 ? "完成旅程" : step < 0 ? "回到第一段" : "下一段"}
+              {step === tourSteps.length - 1
+                ? "完成旅程"
+                : step < 0
+                  ? "回到第一段"
+                  : "下一段"}
               <ArrowRight size={14} />
             </button>
             <button onClick={() => setTour(false)} aria-label="退出導覽">

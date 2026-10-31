@@ -21,11 +21,14 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { useExperience } from "../store/experience";
+import { AdminOnly } from "../components/experience/AdminView";
 import { Brand, Modal, ResetButton, SkipLink } from "../components/ui";
 const adminLinks = [
   ["dashboard", "企業總覽", LayoutDashboard],
-  ["analytics", "碳排分析", ChartNoAxesCombined],
+  ["analytics", "主管洞察", ChartNoAxesCombined],
   ["people", "員工與部門", Users],
+  ["alerts", "異常追蹤", Bell],
   ["devices", "IoT 設備", Radio],
   ["reports", "ESG 報告", FileChartColumn],
   ["rewards", "獎勵管理", Gift],
@@ -44,6 +47,8 @@ function useRouteReset() {
   }, [pathname]);
 }
 export function AdminLayout() {
+  const { presentation, updatePresentation } = useExperience();
+  const administrator = presentation.adminView === "administrator";
   const location = useLocation();
   const [help, setHelp] = useState(false);
   const [bell, setBell] = useState(false);
@@ -126,7 +131,9 @@ export function AdminLayout() {
           {adminLinks.map(([path, label, Icon]) => (
             <NavLink key={path} to={`/admin/${path}`}>
               <Icon size={17} />
-              <span>{label}</span>
+              <span>
+                {path === "people" && !administrator ? "部門參與" : label}
+              </span>
               {path === "devices" && <span className="nav-count">8</span>}
             </NavLink>
           ))}
@@ -148,8 +155,10 @@ export function AdminLayout() {
           <div className="sidebar-account">
             <span className="avatar small">沐</span>
             <div>
-              <b>林沐青</b>
-              <small>永續管理員</small>
+              <b>{administrator ? "系統管理員" : "部門主管"}</b>
+              <small>
+                {administrator ? "管理個人明細與設定" : "部門彙總視角"}
+              </small>
             </div>
           </div>
         </div>
@@ -179,7 +188,19 @@ export function AdminLayout() {
             </div>
           </div>
           <div className="toolbar-right">
-            <span className="toolbar-demo-date">2026/10/27</span>
+            <select
+              className="view-select"
+              aria-label="檢視身分"
+              value={presentation.adminView}
+              onChange={(e) =>
+                updatePresentation({
+                  adminView: e.target.value as "manager" | "administrator",
+                })
+              }
+            >
+              <option value="manager">主管 · 部門彙總</option>
+              <option value="administrator">管理員 · 完整明細</option>
+            </select>
 
             <button
               className="icon-btn notification"
@@ -195,9 +216,15 @@ export function AdminLayout() {
           id="main-content"
           tabIndex={-1}
           className={`admin-main ${location.pathname.endsWith("reports") ? "reports-main" : ""}`}
-          key={location.pathname}
+          key={`${location.pathname}:${presentation.adminView}`}
         >
-          <Outlet />
+          {["/admin/devices", "/admin/rewards"].includes(location.pathname) ? (
+            <AdminOnly>
+              <Outlet />
+            </AdminOnly>
+          ) : (
+            <Outlet />
+          )}
         </main>
         <footer className="admin-footer">
           <span>Eco-Sensing</span>
@@ -210,6 +237,7 @@ export function AdminLayout() {
             青禾科技股份有限公司為虛構公司。資料儲存於目前瀏覽器，呈現員工行為碳足跡、IoT
             流程、減碳任務及企業 ESG 管理。
           </p>
+          <p>「檢視身分」用於切換畫面內容，不提供帳號登入或資料存取授權。</p>
           <p>
             歷史 5–9 月為獨立彙總資料，10
             月由活動紀錄加總。裝置與雲端服務的操作只更新此工作空間，不會控制設備或傳送訊息。
@@ -262,7 +290,7 @@ export function EmployeeLayout() {
         </Link>
         <Link to="/app/assistant" className="switch-link">
           <MessageSquare size={16} />
-          Teams 小幫手
+          Eco 小幫手
         </Link>
         <Link to="/admin/dashboard" className="switch-link">
           <ArrowLeftRight size={16} />

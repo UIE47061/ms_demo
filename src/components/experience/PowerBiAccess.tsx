@@ -1,11 +1,13 @@
 import { publicAsset } from "../../utils/assets";
 import { Download, ExternalLink } from "lucide-react";
 import { useState } from "react";
+import { useExperience } from "../../store/experience";
 import { useDemo } from "../../store/demo";
 import type { CarbonEvent } from "../../types";
 import {
   biCsv,
   buildBiTables,
+  buildDepartmentBiTable,
   validatePowerBiReportUrl,
   type BiTable,
 } from "../../utils/biExport";
@@ -13,11 +15,15 @@ export const REPORT_LINK_KEY = "eco-sensing-powerbi-report-url-v1";
 export function PowerBiAccess({
   events,
   scope,
+  onReportChange,
 }: {
   events: CarbonEvent[];
   scope: string;
+  onReportChange?: (url: string) => void;
 }) {
   const { state, notify } = useDemo();
+  const { presentation } = useExperience();
+  const administrator = presentation.adminView === "administrator";
   const [url, setUrl] = useState(() => {
     try {
       return (
@@ -53,6 +59,7 @@ export function PowerBiAccess({
     try {
       localStorage.setItem(REPORT_LINK_KEY, clean);
       setSaved(clean);
+      onReportChange?.(clean);
       setUrl(clean);
       setError("");
       notify("報表網址已儲存；開啟時仍需 Microsoft 登入與權限");
@@ -70,7 +77,7 @@ export function PowerBiAccess({
           <span className="service-kicker gold">
             在真正的 MICROSOFT 平台查看
           </span>
-          <h2>把這份資料，帶進 Power BI。</h2>
+          <h2>Power BI 報表與資料交換</h2>
           <p>
             下載資料、匯入工作區，再開啟你建立的報表。這裡是檔案交換，尚未自動同步。
           </p>
@@ -89,32 +96,46 @@ export function PowerBiAccess({
         <button
           className="btn"
           onClick={() =>
-            download(buildBiTables(events).events, "EcoEvents.csv")
+            download(
+              administrator
+                ? buildBiTables(events).events
+                : buildDepartmentBiTable(events),
+              administrator ? "EcoEvents.csv" : "EcoDepartmentSummary.csv",
+            )
           }
         >
           <Download size={15} />
-          下載目前篩選事件 CSV
+          {administrator ? "下載目前篩選事件 CSV" : "下載部門彙總 CSV"}
         </button>
-        <a
-          className="btn-secondary"
-          href={publicAsset("/bi/Eco-Sensing-PowerBI-Seed.xlsx")}
-          download
-        >
-          <Download size={15} />
-          下載初始 Excel
-        </a>
-        <button
-          className="btn-secondary"
-          onClick={() =>
-            download(buildBiTables(state.events).monthly, "EcoMonthlyTrend.csv")
-          }
-        >
-          全公司六個月趨勢 CSV
-        </button>
+        {administrator && (
+          <a
+            className="btn-secondary"
+            href={publicAsset("/bi/Eco-Sensing-PowerBI-Seed.xlsx")}
+            download
+          >
+            <Download size={15} />
+            下載初始 Excel
+          </a>
+        )}
+        {administrator && (
+          <button
+            className="btn-secondary"
+            onClick={() =>
+              download(
+                buildBiTables(state.events).monthly,
+                "EcoMonthlyTrend.csv",
+              )
+            }
+          >
+            全公司六個月趨勢 CSV
+          </button>
+        )}
       </div>
       <p className="bi-scope">
-        目前事件：{scope} · {events.length} 筆。Excel 為初始 56
-        筆活動；需要最新操作資料請下載 CSV。
+        資料範圍：{scope} · {events.length} 筆活動。
+        {administrator
+          ? "Excel 為初始 56 筆活動；目前資料請下載 CSV。"
+          : "匯出以部門與來源彙總，不包含員工姓名、編號或個人事件。"}
       </p>
       <details className="bi-setup">
         <summary>匯入步驟與報表網址設定</summary>
@@ -122,11 +143,15 @@ export function PowerBiAccess({
           <div>
             <h3>瀏覽器版 Power BI</h3>
             <ol>
-              <li>下載 Excel，或下載目前事件 CSV。</li>
+              <li>
+                {administrator
+                  ? "下載 Excel，或下載目前事件 CSV。"
+                  : "下載目前範圍的部門彙總 CSV。"}
+              </li>
               <li>
                 在 Power BI 的工作區新增語意模型，從 Excel／Text-CSV 選取資料。
               </li>
-              <li>以 EcoEvents 建立部門、來源與日期圖表；另列避免排放。</li>
+              <li>依資料欄位建立部門與來源圖表；另列避免排放。</li>
               <li>儲存報表後，把報表網址貼到右側。</li>
             </ol>
             <a
@@ -137,21 +162,23 @@ export function PowerBiAccess({
             >
               查看完整欄位與圖表設定
             </a>
-            <div className="bi-external-links">
-              <a
-                href="https://app.fabric.microsoft.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                開啟 Fabric <ExternalLink size={12} />
-              </a>
-              <a
-                href={publicAsset("/bi/Eco-Sensing-PowerBI-Fabric.zip")}
-                download
-              >
-                下載完整匯入包
-              </a>
-            </div>
+            {administrator && (
+              <div className="bi-external-links">
+                <a
+                  href="https://app.fabric.microsoft.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  開啟 Fabric <ExternalLink size={12} />
+                </a>
+                <a
+                  href={publicAsset("/bi/Eco-Sensing-PowerBI-Fabric.zip")}
+                  download
+                >
+                  下載完整匯入包
+                </a>
+              </div>
+            )}
           </div>
           <div>
             <label>
@@ -182,6 +209,7 @@ export function PowerBiAccess({
                       localStorage.removeItem(REPORT_LINK_KEY);
                     } catch {}
                     setSaved("");
+                    onReportChange?.("");
                     setUrl("");
                     notify("已清除報表網址");
                   }}

@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { DonutChart, TrendChart } from "../../components/charts";
 import { BossChallenge } from "../../components/experience/Growth";
 import { PlantIllustration } from "../../components/experience/Illustrations";
-import { TeamsShortcut } from "../../components/experience/Microsoft";
+import { AssistantShortcut } from "../../components/experience/Microsoft";
 import {
   TaskLinks,
   taskNames,
@@ -487,7 +487,7 @@ export function Profile() {
           </Link>
         </div>
       </div>
-      <TeamsShortcut />
+      <AssistantShortcut />
       <SectionHead title="我的成就" />
       <div className="badges">
         {[

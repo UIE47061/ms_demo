@@ -133,3 +133,28 @@ export function validatePowerBiReportUrl(value: string): string | null {
     return null;
   }
 }
+
+export function buildDepartmentBiTable(events: CarbonEvent[]): BiTable {
+  const groups = new Map<string, CarbonEvent[]>();
+  for (const e of events) {
+    const key = `${e.department}|${e.source}`;
+    groups.set(key, [...(groups.get(key) || []), e]);
+  }
+  return {
+    name: "EcoDepartmentSummary",
+    headers: [
+      "department",
+      "source_name",
+      "emission_kg_co2e",
+      "avoided_kg_co2e",
+      "activity_count",
+    ],
+    rows: [...groups.values()].map((rows) => [
+      rows[0].department,
+      sourceMeta[rows[0].source].label,
+      Number(rows.reduce((a, e) => a + e.emission, 0).toFixed(6)),
+      Number(rows.reduce((a, e) => a + e.avoided, 0).toFixed(6)),
+      rows.length,
+    ]),
+  };
+}

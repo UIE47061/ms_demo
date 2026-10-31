@@ -140,3 +140,30 @@ export function managerAnswer(
     eventIds: [latest.id],
   };
 }
+
+export const supervisorQuestions = [
+  "哪個部門排放最高？",
+  "哪個來源占比最高？",
+  "最近一天排放多少？",
+] as const;
+export function supervisorAnswer(
+  index: number,
+  events: CarbonEvent[],
+  scope: string,
+): DemoAnswer {
+  if (index < 2)
+    return { ...managerAnswer(index, events, scope), eventIds: [] };
+  const latest = events
+    .map((e) => e.date.slice(0, 10))
+    .sort()
+    .reverse()[0];
+  const rows = events.filter((e) => e.date.startsWith(latest || "_"));
+  return {
+    heading: latest ? `${latest} 部門彙總` : "目前範圍沒有事件",
+    text: latest
+      ? `合計 ${n(sum(rows), 2)} kg CO₂e，共 ${rows.length} 筆活動，不呈現個人明細。`
+      : "請調整篩選範圍。",
+    source: `${scope} · ${events.length} 筆活動紀錄 · 部門彙總`,
+    eventIds: [],
+  };
+}

@@ -10,10 +10,13 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DATASET } from "../../data/microsoftDemo";
+import { useExperience } from "../../store/experience";
 import { useDemo } from "../../store/demo";
 import type { CarbonEvent } from "../../types";
 import {
   managerAnswer,
+  supervisorAnswer,
+  supervisorQuestions,
   managerQuestions,
   personalAnswer,
   personalQuestions,
@@ -60,6 +63,8 @@ export function DataAgent({
   scope: string;
 }) {
   const [question, setQuestion] = useState(0);
+  const { presentation } = useExperience();
+  const administrator = presentation.adminView === "administrator";
   return (
     <section className="data-agent" aria-label="主管 Data Agent">
       <div className="microsoft-section-head">
@@ -71,22 +76,28 @@ export function DataAgent({
       <div className="agent-workspace">
         <div className="agent-questions">
           <span className="micro-label">選擇一個問題</span>
-          {managerQuestions.map((q, i) => (
-            <button
-              key={q}
-              aria-pressed={i === question}
-              onClick={() => setQuestion(i)}
-            >
-              {q}
-              <ArrowRight size={14} />
-            </button>
-          ))}
+          {(administrator ? managerQuestions : supervisorQuestions).map(
+            (q, i) => (
+              <button
+                key={q}
+                aria-pressed={i === question}
+                onClick={() => setQuestion(i)}
+              >
+                {q}
+                <ArrowRight size={14} />
+              </button>
+            ),
+          )}
           <p>
             回答依目前篩選的事件計算；圖表可搭配 Excel、CSV 與 Power BI 分析。
           </p>
         </div>
         <AnswerPanel
-          answer={managerAnswer(question, events, scope)}
+          answer={
+            administrator
+              ? managerAnswer(question, events, scope)
+              : supervisorAnswer(question, events, scope)
+          }
           events={events}
         />
       </div>
@@ -196,15 +207,15 @@ export function IoTFlow() {
     </div>
   );
 }
-export function TeamsShortcut() {
+export function AssistantShortcut() {
   return (
     <Link className="teams-shortcut" to="/app/assistant">
       <span className="teams-mark">
         <MessageSquare size={18} />
       </span>
       <div>
-        <b>Eco 小幫手在 Teams 等你</b>
-        <small>離座提醒與個人問答</small>
+        <b>問問 Eco 小幫手</b>
+        <small>個人足跡與任務建議</small>
       </div>
       <ArrowRight size={16} />
     </Link>

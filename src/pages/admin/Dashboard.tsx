@@ -19,7 +19,13 @@ import {
   DonutChart,
   TrendChart,
 } from "../../components/charts";
-import { PowerBiAccess } from "../../components/experience/PowerBiAccess";
+import { AlertsPanel } from "../../components/experience/AlertsPanel";
+import { useExperience } from "../../store/experience";
+import {
+  PowerBiAccess,
+  REPORT_LINK_KEY,
+} from "../../components/experience/PowerBiAccess";
+import { validatePowerBiReportUrl } from "../../utils/biExport";
 import { EventList } from "../../components/Events";
 import { DataAgent } from "../../components/experience/Microsoft";
 import { Metric, Panel, SectionHead } from "../../components/ui";
@@ -75,6 +81,8 @@ export function AdminFilters({
   );
 }
 export function Dashboard() {
+  const { presentation } = useExperience();
+  const administrator = presentation.adminView === "administrator";
   const { state } = useDemo();
   const [dept, setDept] = useState("全部部門");
   const [period, setPeriod] = useState("month");
@@ -146,7 +154,7 @@ export function Dashboard() {
           <Link className="text-link" to="/admin/analytics">
             用 Data Agent 繼續探索 <ArrowRight size={14} />
           </Link>
-          <Link className="focus-alert" to="/admin/devices">
+          <Link className="focus-alert" to="/admin/alerts">
             <CircleAlert size={15} />
             {state.devices.filter((d) => d.status !== "在線").length}{" "}
             項設備需留意 <ChevronRight size={14} />
@@ -221,8 +229,12 @@ export function Dashboard() {
           <SectionHead
             title="設備與異常通知"
             action={
-              <Link to="/admin/devices" className="text-link">
-                管理設備 <ArrowRight size={13} />
+              <Link
+                to={administrator ? "/admin/devices" : "/admin/alerts"}
+                className="text-link"
+              >
+                {administrator ? "管理設備" : "追蹤異常"}{" "}
+                <ArrowRight size={13} />
               </Link>
             }
           />
@@ -242,7 +254,11 @@ export function Dashboard() {
           {state.devices
             .filter((d) => d.status !== "在線")
             .map((d) => (
-              <Link to="/admin/devices" className="alert-row" key={d.id}>
+              <Link
+                to={`/admin/alerts?id=${encodeURIComponent(`device:${d.id}`)}`}
+                className="alert-row"
+                key={d.id}
+              >
                 <span
                   className={
                     d.status === "警告" ? "alert-icon amber" : "alert-icon"
@@ -262,29 +278,43 @@ export function Dashboard() {
             ))}
         </Panel>
       </div>
-      <Panel className="events-panel">
-        <SectionHead
-          title="最近感測與活動事件"
-          subtitle="依事件時間排序 · 最近 5 筆"
-          action={
-            <Link to="/admin/devices" className="text-link">
-              檢視設備 <ArrowRight size={13} />
-            </Link>
-          }
-        />
-        <EventList
-          table
-          events={events
-            .slice()
-            .sort((a, b) => b.date.localeCompare(a.date))
-            .slice(0, 5)}
-        />
-      </Panel>
+      {administrator ? (
+        <Panel className="events-panel">
+          <SectionHead
+            title="最近感測與活動事件"
+            subtitle="依事件時間排序 · 最近 5 筆"
+            action={
+              <Link to="/admin/devices" className="text-link">
+                檢視設備 <ArrowRight size={13} />
+              </Link>
+            }
+          />
+          <EventList
+            table
+            events={events
+              .slice()
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .slice(0, 5)}
+          />
+        </Panel>
+      ) : (
+        <AlertsPanel events={events} dept={dept} period={period} />
+      )}
     </>
   );
 }
 export function Analytics() {
   const { state } = useDemo();
+  const [reportUrl, setReportUrl] = useState(() => {
+    try {
+      return (
+        validatePowerBiReportUrl(localStorage.getItem(REPORT_LINK_KEY) || "") ||
+        ""
+      );
+    } catch {
+      return "";
+    }
+  });
   const [dept, setDept] = useState("全部部門");
   const [period, setPeriod] = useState("month");
   const events = selectEvents(state.events, dept, period);
@@ -292,19 +322,39 @@ export function Analytics() {
     <>
       <div className="admin-page-head">
         <div>
-          <h1>碳排分析</h1>
-          <p>依期間與部門比較排放來源。</p>
+          <span className="service-kicker gold">
+            POWER BI · MICROSOFT FABRIC
+          </span>
+          <h1>主管洞察</h1>
+          <p>比較部門、追蹤異常，再到 Power BI 查看報表。</p>
         </div>
-        <AdminFilters {...{ dept, setDept, period, setPeriod }} />
+        <div className="analytics-header-actions">
+          <a
+            className="btn-secondary"
+            href={reportUrl || "https://app.powerbi.com/"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            前往 Power BI ↗
+          </a>
+          <AdminFilters {...{ dept, setDept, period, setPeriod }} />
+        </div>
       </div>
-      <PowerBiAccess
-        events={events}
-        scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}
-      />
-      <DataAgent
-        events={events}
-        scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}
-      />
+      <section className="analytics-workflow">
+        <span>01 部門分析</span>
+        <Link to="/admin/alerts">02 異常處理 →</Link>
+        <a
+          href="#powerbi-access"
+          onClick={(e) => {
+            e.preventDefault();
+            document
+              .getElementById("powerbi-access")
+              ?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          03 Power BI 報表 ↓
+        </a>
+      </section>
       <div className="metrics-grid three">
         <Metric
           label="篩選範圍估算排放"
@@ -363,12 +413,24 @@ export function Analytics() {
           </div>
         </Panel>
       </div>
+      <div id="powerbi-access">
+        <PowerBiAccess
+          onReportChange={setReportUrl}
+          events={events}
+          scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}
+        />
+      </div>
+      <AlertsPanel events={events} dept={dept} period={period} />
+      <DataAgent
+        events={events}
+        scope={`${dept} · ${period === "month" ? "2026/10/01–10/27" : "2026/10/24–10/27"}`}
+      />
       <Panel className="integration-panel">
         <div>
           <span className="service-kicker azure">
             同一份資料，串起 Microsoft 生態系
           </span>
-          <h2>從感測、AI 到 Teams，看看每一步。</h2>
+          <h2>從 Outlook、AI 到 Power BI，看看每一步。</h2>
 
           <Link className="text-link" to="/admin/integrations">
             探索整合流程 <ArrowRight size={14} />

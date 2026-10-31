@@ -22,13 +22,14 @@ export function Integrations() {
           <h2>
             物聯網記錄，
             <br />
-            AI 整理，Teams 陪你減。
+            AI 整理，App 陪你減。
           </h2>
           <p>
-            從差旅與回收，到提醒與主管洞察；每一個操作都回到同一份事件與任務狀態。
+            從 Outlook
+            待辦與回收，到桌面提醒與主管洞察；每一個操作都回到同一份事件與任務狀態。
           </p>
           <Link className="btn" to="/guide">
-            體驗四段流程 <ArrowRight size={15} />
+            體驗五段流程 <ArrowRight size={15} />
           </Link>
         </div>
         <div className="integration-live">

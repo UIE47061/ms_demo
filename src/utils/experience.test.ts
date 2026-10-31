@@ -26,7 +26,7 @@ describe("成長與 Microsoft 呈現層", () => {
       growth({ ...s, claimed: ["unknown", "power", "power"] }),
     ).toMatchObject({ claimed: 1, hp: 83 });
   });
-  it("Teams 沿用領獎規則且只發一次，不改排放事件", () => {
+  it("Eco-Agent 沿用領獎規則且只發一次，不改排放事件", () => {
     const s = createSeed();
     const next = completePowerMission(s);
     expect(next.coins).toBe(s.coins + 40);

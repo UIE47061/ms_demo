@@ -1,0 +1,650 @@
+/* Microsoft touchpoints stay inside the action they support. */
+.calendar-trip {
+  border: 1px solid #d5e4ed;
+  border-radius: 12px;
+  background: #f0f6fa;
+  padding: 20px;
+  margin: 16px 0 22px;
+}
+.calendar-origin {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #256b91;
+  font-size: 12px;
+}
+.calendar-origin small {
+  margin-left: auto;
+  color: #637b87;
+  font-size: 11px;
+}
+.calendar-trip h2 {
+  font-size: 23px !important;
+  letter-spacing: -0.5px;
+  margin: 16px 0 7px;
+}
+.calendar-trip p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #687d86;
+}
+.calendar-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 18px;
+}
+.calendar-trip .disclosure {
+  margin-top: 16px;
+  border-color: #d5e4ed;
+}
+.employee-ux .calendar-trip.compact {
+  padding: 16px;
+  margin: 0 0 18px;
+}
+.employee-ux .calendar-trip.compact h2 {
+  font-size: 20px !important;
+  margin-top: 12px;
+}
+.employee-ux .calendar-trip.compact .calendar-actions {
+  margin-top: 12px;
+}
+.employee-ux .calendar-trip.compact .btn {
+  background: #24698e;
+  border-color: #24698e;
+}
+.calendar-context {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #24698e;
+  margin: 0 0 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid #d5e4ed;
+}
+.home-assistant-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 14px 0;
+  color: var(--brand);
+}
+.home-assistant-link > svg:last-child {
+  margin-left: auto;
+}
+.agent-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 24px;
+}
+.agent-shortcut > span {
+  flex: 1;
+}
+.agent-shortcut b {
+  display: block;
+  font-size: 14px;
+  font-weight: 550;
+}
+.agent-shortcut small {
+  display: block;
+  font-size: 12px;
+  color: var(--secondary);
+  margin-top: 6px;
+}
+.travel-result {
+  border: 1px solid #d7e4df;
+  border-radius: 12px;
+  padding: 20px;
+  background: #f1f6ef;
+  margin: 20px 0;
+}
+.travel-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  color: #6b7c6b;
+}
+.travel-result h2 {
+  font-size: 23px !important;
+  margin: 18px 0 6px;
+}
+.travel-result > p {
+  font-size: 13px;
+  color: var(--secondary);
+}
+.travel-result-value {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 22px 0;
+}
+.travel-result-value strong {
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -1.4px;
+  color: var(--brand);
+  font-variant-numeric: tabular-nums;
+}
+.travel-result-value span {
+  font-size: 12px;
+  color: var(--secondary);
+}
+.travel-result dl > div {
+  margin: 12px 0;
+}
+.travel-result dt {
+  font-size: 11px;
+  color: var(--secondary);
+  margin-bottom: 4px;
+}
+.travel-result dd {
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.travel-result .disclosure {
+  margin-top: 18px;
+}
+.sync-journey {
+  display: block;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--brand);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+.agent-page {
+  min-height: 100dvh;
+  background: #f6f8f4;
+  padding: 0 32px 48px;
+}
+.agent-page > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1120px;
+  margin: auto;
+  height: 82px;
+  border-bottom: 1px solid var(--border);
+}
+.agent-main {
+  max-width: 1000px;
+  margin: 42px auto 0;
+}
+.agent-page-title h1 {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  margin: 14px 0 10px;
+}
+.agent-page-title > p {
+  font-size: 14px;
+  color: var(--secondary);
+}
+.desktop-scene {
+  border: 1px solid #cbd9d1;
+  border-radius: 12px;
+  background: #edf2ec;
+  overflow: hidden;
+  margin-top: 28px;
+}
+.desktop-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 15px 20px;
+  background: #fbfcf9;
+  font-size: 12px;
+  border-bottom: 1px solid #dae3d9;
+}
+.desktop-titlebar b {
+  font-weight: 550;
+}
+.desktop-titlebar > span {
+  margin-left: auto;
+  color: var(--secondary);
+}
+.desktop-work {
+  display: grid;
+  grid-template-columns: 1fr minmax(340px, 430px);
+  gap: 30px;
+  padding: 40px;
+  align-items: center;
+  min-height: 440px;
+}
+.desktop-document {
+  border: 1px solid #d5dfd2;
+  background: #f9fbf6;
+  min-height: 270px;
+  padding: 28px;
+  border-radius: 6px;
+  color: #8d9a88;
+}
+.desktop-document > span {
+  font-size: 16px;
+}
+.desktop-document > div {
+  height: 9px;
+  border-radius: 3px;
+  background: #e3eadf;
+  margin-top: 24px;
+}
+.desktop-document > div:last-child {
+  width: 65%;
+}
+.agent-notification {
+  border: 1px solid #d5e1d3;
+  border-radius: 12px;
+  background: #fffefa;
+  padding: 24px;
+  box-shadow: 0 6px 18px #20382e08;
+}
+.agent-notification-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand);
+  font-size: 13px;
+}
+.agent-notification-head > span {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--secondary);
+}
+.agent-notification h2 {
+  font-size: 23px;
+  line-height: 1.6;
+  margin: 22px 0 12px;
+  letter-spacing: -0.5px;
+}
+.agent-notification p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--secondary);
+}
+.agent-reward {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin: 20px 0;
+  color: var(--brand);
+  font-size: 16px;
+  font-weight: 600;
+}
+.agent-reward small {
+  margin-left: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--secondary);
+}
+.agent-notification .btn,
+.agent-notification .btn-secondary {
+  min-height: 48px;
+  margin-top: 8px;
+}
+.desktop-taskbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #d5dfd2;
+  padding: 14px 20px;
+  background: #f8faf5;
+  color: #82917d;
+  font-size: 11px;
+}
+.agent-followup {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  margin-top: 22px;
+}
+.agent-followup a {
+  min-height: 44px;
+}
+
+.view-select {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 7px;
+  min-height: 38px;
+  max-width: 210px;
+  font-size: 12px;
+  padding: 8px 10px;
+}
+.view-boundary {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+}
+.view-boundary h1 {
+  font-size: 28px;
+  margin: 16px 0;
+}
+.view-boundary p {
+  color: var(--secondary);
+  line-height: 1.9;
+  margin-bottom: 24px;
+}
+.analytics-workflow {
+  display: flex;
+  gap: 24px;
+  border-block: 1px solid var(--border);
+  padding: 16px 0;
+  margin: 18px 0 26px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+.analytics-workflow a {
+  color: var(--brand);
+}
+#powerbi-access {
+  scroll-margin-top: 24px;
+}
+.insight-alerts {
+  margin: 24px 0 28px;
+  padding: 22px 24px;
+  background: #fffdf6;
+  border: 1px solid #e9e3d2;
+  border-radius: 10px;
+}
+.insight-alerts h2 {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 8px 0 16px;
+}
+.insight-alerts > div:last-child {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.insight-alerts a {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid #e9e3d2;
+  justify-content: space-between;
+  align-items: center;
+}
+.insight-alerts b {
+  display: block;
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 550;
+}
+.insight-alerts small {
+  display: block;
+  color: var(--secondary);
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 4px;
+}
+.insight-alerts strong {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 550;
+  color: #8a753b;
+}
+.alert-workspace {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 28px;
+  margin: 24px 0;
+}
+.alert-workspace > nav {
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.alert-workspace > nav button {
+  padding: 18px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+.alert-workspace > nav button[aria-pressed="true"] {
+  border-color: #b9cebb;
+  background: #edf4eb;
+}
+.alert-workspace > nav b {
+  display: block;
+  font-size: 13px;
+  line-height: 1.8;
+  font-weight: 550;
+}
+.alert-workspace > nav small {
+  display: block;
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--secondary);
+}
+.alert-detail {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 10px;
+  padding: 28px;
+  min-width: 0;
+}
+.alert-detail h2 {
+  font-size: 24px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+.alert-value {
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--brand);
+  margin: 18px 0 8px;
+}
+.alert-detail > p {
+  color: var(--secondary);
+  font-size: 13px;
+}
+.alert-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.resolution-note {
+  font-size: 12px;
+  padding: 16px 0 0;
+}
+.notification-preference {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.notification-preference h2 {
+  font-size: 16px;
+}
+.notification-preference p {
+  font-size: 12px;
+  color: var(--secondary);
+  margin-top: 8px;
+}
+.notification-preference select {
+  min-width: 180px;
+  min-height: 44px;
+}
+.scenario-grid > .scenario:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+.scenario.agent {
+  background: #edf3f7;
+  border-color: #d9e5e9;
+}
+@media (max-width: 1000px) {
+  .desktop-work {
+    padding: 26px;
+    grid-template-columns: 1fr minmax(300px, 390px);
+    gap: 20px;
+  }
+  .alert-workspace {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 18px;
+  }
+  .insight-alerts > div:last-child {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+@media (max-width: 700px) {
+  .agent-page {
+    padding: 0 18px 32px;
+  }
+  .agent-page > header {
+    height: 64px;
+    gap: 10px;
+  }
+  .agent-page > header .brand {
+    font-size: 16px;
+  }
+  .agent-page > header > .text-link {
+    font-size: 11px;
+  }
+  .agent-main {
+    margin-top: 24px;
+  }
+  .agent-page-title h1 {
+    font-size: 27px;
+    line-height: 1.5;
+  }
+  .desktop-work {
+    display: block;
+    padding: 16px;
+    min-height: 0;
+  }
+  .desktop-document {
+    display: none;
+  }
+  .agent-notification {
+    padding: 18px;
+  }
+  .agent-notification h2 {
+    font-size: 21px;
+  }
+  .agent-notification-head {
+    flex-wrap: wrap;
+  }
+  .agent-notification-head > span {
+    margin-left: 0;
+  }
+  .desktop-titlebar,
+  .desktop-taskbar {
+    padding: 12px 14px;
+  }
+  .agent-followup {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .view-select {
+    max-width: 160px;
+    min-width: 0;
+    font-size: 11px;
+  }
+  .admin-toolbar {
+    gap: 10px;
+  }
+  .analytics-workflow {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .alert-workspace {
+    grid-template-columns: 1fr;
+  }
+  .alert-workspace > nav {
+    flex-direction: row;
+    overflow: auto;
+    padding-bottom: 8px;
+  }
+  .alert-workspace > nav button {
+    min-width: 190px;
+    flex-shrink: 0;
+  }
+  .alert-detail {
+    padding: 20px;
+  }
+  .alert-detail h2 {
+    font-size: 21px;
+  }
+  .alert-detail-actions {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .notification-preference {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .notification-preference select {
+    width: 100%;
+  }
+  .calendar-actions .btn,
+  .calendar-actions .btn-secondary {
+    padding-inline: 8px;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .analytics-workflow {
+    scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 1101px) {
+  .demo-step-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+.analytics-header-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.desktop-document dl {
+  margin: 24px 0 16px;
+}
+.desktop-document dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid #e2e8de;
+}
+.desktop-document dt {
+  font-size: 12px;
+  color: #7b8a75;
+}
+.desktop-document dd {
+  font-size: 13px;
+  color: #486044;
+}
+.desktop-document > .text-link {
+  font-size: 12px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 700px) {
+  .analytics-header-actions {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+}

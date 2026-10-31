@@ -9,16 +9,24 @@ import {
   Upload,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { AiTrace, IoTFlow } from "../../components/experience/Microsoft";
 import { Button, Panel } from "../../components/ui";
 import { BASE_DATE, CURRENT_USER, missions } from "../../data/seed";
-import { TRAVEL_PRESET } from "../../data/microsoftDemo";
+import {
+  CALENDAR_TRIP,
+  TRAVEL_PRESET,
+  TRAVEL_REFERENCE_RATE,
+} from "../../data/microsoftDemo";
 import {
   InlineReward,
   ScanExit,
 } from "../../components/experience/EmployeeActions";
 import { readDraft, saveDraft, removeDraft } from "../../utils/scanDraft";
+import { useExperience } from "../../store/experience";
+import { estimateTravel } from "../../utils/travel";
+import { TravelResult } from "../../components/experience/TravelResult";
+import { CalendarTripCard } from "../../components/experience/CalendarTrip";
 import { addEvent, useDemo } from "../../store/demo";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 function Receipt() {
@@ -61,16 +69,32 @@ function Steps({ step }: { step: number }) {
 }
 export function TravelScan() {
   const { state, setState, notify } = useDemo();
+  const [search] = useSearchParams();
+  const { presentation, updatePresentation } = useExperience();
   const [draft] = useState(() =>
-    readDraft<{ field: typeof TRAVEL_PRESET; step: number; id: string }>(
-      "travel",
-    ),
+    readDraft<{
+      field: typeof TRAVEL_PRESET;
+      step: number;
+      id: string;
+      factor?: number;
+      tripId?: string;
+    }>("travel"),
   );
+  const linkedTrip =
+    (search.get("trip") === CALENDAR_TRIP.id ||
+      (!search.get("trip") && draft?.tripId === CALENDAR_TRIP.id)) &&
+    presentation.tripStatus !== "dismissed";
   const [step, setStep] = useState(draft?.field ? Math.min(draft.step, 1) : 0);
   const [busy, setBusy] = useState(false);
   const [traceStage, setTraceStage] = useState(0);
   const [preview, setPreview] = useState("");
   const [field, setField] = useState(draft?.field || { ...TRAVEL_PRESET });
+  const [factor, setFactor] = useState(
+    Number.isFinite(draft?.factor) && draft!.factor! >= 0
+      ? draft!.factor!
+      : TRAVEL_REFERENCE_RATE,
+  );
+  const emission = estimateTravel(field.distance, factor);
   const manual =
     field.date !== BASE_DATE ||
     field.transport !== "臺灣高鐵" ||
@@ -78,10 +102,16 @@ export function TravelScan() {
     field.to !== "臺中" ||
     field.fare !== 700 ||
     field.distance !== 165 ||
-    field.emission !== 5.8;
+    emission !== 5.8 ||
+    factor !== TRAVEL_REFERENCE_RATE;
   const [error, setError] = useState("");
   const lock = useRef(false);
   const operation = useRef(draft?.id || crypto.randomUUID());
+  const alreadyRecorded =
+    linkedTrip &&
+    presentation.tripStatus === "recorded" &&
+    state.events.some((e) => e.id === presentation.tripEventId) &&
+    step !== 2;
   const input = useRef<HTMLInputElement>(null);
   const token = useRef(0);
   useEffect(() => {
@@ -99,9 +129,15 @@ export function TravelScan() {
   useEffect(() => {
     if (step === 2) removeDraft("travel");
     else if (step === 1 || manual)
-      saveDraft("travel", { field, step, id: operation.current });
+      saveDraft("travel", {
+        field: { ...field, emission: emission ?? 0 },
+        step,
+        id: operation.current,
+        factor,
+        tripId: linkedTrip ? CALENDAR_TRIP.id : undefined,
+      });
     else removeDraft("travel");
-  }, [field, step, manual]);
+  }, [field, step, manual, factor, linkedTrip]);
   useEffect(
     () => () => {
       token.current++;
@@ -125,21 +161,23 @@ export function TravelScan() {
       if (current !== token.current) return;
     }
     setField({ ...TRAVEL_PRESET });
+    setFactor(TRAVEL_REFERENCE_RATE);
     setError("");
     setStep(1);
     setBusy(false);
     lock.current = false;
   }
   function submit() {
-    if (lock.current) return;
+    if (lock.current || alreadyRecorded) return;
     if (
+      emission === null ||
       !field.from.trim() ||
       !field.to.trim() ||
       field.from.trim() === field.to.trim() ||
       !field.transport.trim() ||
       field.date < "2026-10-01" ||
       field.date > BASE_DATE ||
-      ![field.fare, field.distance, field.emission].every(
+      ![field.fare, field.distance, factor].every(
         (v) => Number.isFinite(v) && v >= 0,
       ) ||
       field.distance === 0
@@ -158,12 +196,17 @@ export function TravelScan() {
         source: "travel",
         title: `${field.transport}差旅・${field.from} → ${field.to}`,
         date: `${field.date}T14:30:00`,
-        emission: field.emission,
+        emission: emission!,
         avoided: 0,
-        detail: `TWD ${field.fare} · ${field.distance} km · 人工確認`,
+        detail: `TWD ${field.fare} · ${field.distance} km × ${factor} kg CO₂e/km · Eco-Sensing v1 · 人工確認`,
         mock: true,
       }),
     );
+    if (linkedTrip)
+      updatePresentation({
+        tripStatus: "recorded",
+        tripEventId: operation.current,
+      });
     setStep(2);
     notify("差旅已登錄，碳足跡與企業總覽已同步更新");
   }
@@ -173,7 +216,9 @@ export function TravelScan() {
         dirty={step !== 2 && (step === 1 || manual || !!preview || busy)}
         save={() =>
           saveDraft("travel", {
-            field,
+            field: { ...field, emission: emission ?? 0 },
+            factor,
+            tripId: linkedTrip ? CALENDAR_TRIP.id : undefined,
             step: Math.min(step, 1),
             id: operation.current,
           })
@@ -184,12 +229,19 @@ export function TravelScan() {
         <h1>登錄差旅</h1>
       </div>
       <Steps step={step} />
+      {linkedTrip && !alreadyRecorded && (
+        <p className="calendar-context">
+          Outlook 行程 · {CALENDAR_TRIP.date} · {CALENDAR_TRIP.from} →{" "}
+          {CALENDAR_TRIP.to}
+        </p>
+      )}
+      {alreadyRecorded && <CalendarTripCard />}
       {draft && step < 2 && (
         <p className="draft-notice" role="status">
           已恢復未提交資料，選取的圖片不保留。
         </p>
       )}
-      {step === 0 && (
+      {step === 0 && !alreadyRecorded && (
         <>
           <div className={`receipt-stage ${busy ? "is-scanning" : ""}`}>
             {preview ? <img src={preview} alt="選取的憑證圖片" /> : <Receipt />}
@@ -273,6 +325,17 @@ export function TravelScan() {
             <CheckCircle2 size={18} />
             <span>請確認旅程資訊，必要時修改後再登錄。</span>
           </div>
+          <TravelResult
+            {...{
+              from: field.from,
+              to: field.to,
+              transport: field.transport,
+              date: field.date,
+              distance: field.distance,
+              rate: factor,
+              emission,
+            }}
+          />
           <Panel>
             <h2>確認旅程資訊</h2>
             <details className="disclosure">
@@ -367,33 +430,9 @@ export function TravelScan() {
                     </small>
                   )}
               </label>
-              <label className="span-2">
-                估算碳排（kg CO₂e・待確認數值）
-                <input
-                  aria-label="估算碳排（kg CO₂e・待確認數值）"
-                  aria-describedby={error ? "travel-error-emission" : undefined}
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  aria-invalid={
-                    !!error &&
-                    (!Number.isFinite(field.emission) || field.emission < 0)
-                  }
-                  value={field.emission}
-                  onChange={(e) =>
-                    setField({ ...field, emission: Number(e.target.value) })
-                  }
-                />
-                {error &&
-                  (!Number.isFinite(field.emission) || field.emission < 0) && (
-                    <small id="travel-error-emission" className="field-error">
-                      請填寫非負排放數值。
-                    </small>
-                  )}
-              </label>
             </div>
             <details className="disclosure">
-              <summary>票價與里程</summary>
+              <summary>調整票價、里程與估算比例</summary>
               <div className="form-grid">
                 <label>
                   票價（TWD）
@@ -445,10 +484,21 @@ export function TravelScan() {
                       </small>
                     )}
                 </label>
+                <label className="span-2">
+                  參考排放比例（kg CO₂e/km）
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.000001"
+                    aria-label="參考排放比例"
+                    value={factor}
+                    onChange={(e) => setFactor(Number(e.target.value))}
+                  />
+                </label>
               </div>
             </details>
             <p className="fine-print">
-              收據若未載明起訖站，需自行補填。碳排為初步估算，不隨里程自動計算，非正式排放係數或官方數據。
+              請核對起訖站與里程；排放結果由下方依據計算，不能直接輸入。
             </p>
           </Panel>
           {error && (
@@ -482,16 +532,21 @@ export function TravelScan() {
             <AiTrace manual={manual} />
           </details>
           <p>本次排放與任務進度已更新。</p>
-          <Panel>
-            <span>本次估算排放</span>
-            <strong>
-              {field.emission}
-              <small> kg CO₂e</small>
-            </strong>
-            <p>
-              {field.from} → {field.to} · {field.transport}
-            </p>
-          </Panel>
+          <TravelResult
+            {...{
+              from: field.from,
+              to: field.to,
+              transport: field.transport,
+              date: field.date,
+              distance: field.distance,
+              rate: factor,
+              emission,
+            }}
+            confirmed
+          />
+          <Link className="sync-journey" to="/admin/analytics">
+            個人足跡已更新 → 查看部門分析
+          </Link>
           <div className="notice">
             <Coins size={18} />
             <span>

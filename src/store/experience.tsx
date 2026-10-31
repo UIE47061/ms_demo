@@ -7,9 +7,25 @@ import {
 } from "react";
 import { clearScanDrafts } from "../utils/scanDraft";
 export const EXPERIENCE_KEY = "eco-sensing-experience-v1";
-interface PresentationState {
+export interface PresentationState {
   tourActive: boolean;
   teamsDeferred: boolean;
+  tripStatus: "pending" | "dismissed" | "recorded";
+  tripEventId: string | null;
+  adminView: "manager" | "administrator";
+  resolvedAlerts: string[];
+  notificationChannel: "email" | "teams" | "none";
+}
+function defaults(): PresentationState {
+  return {
+    tourActive: false,
+    teamsDeferred: false,
+    tripStatus: "pending",
+    tripEventId: null,
+    adminView: "manager",
+    resolvedAlerts: [],
+    notificationChannel: "email",
+  };
 }
 function initial(): PresentationState {
   try {
@@ -17,15 +33,27 @@ function initial(): PresentationState {
     return {
       tourActive: v?.tourActive === true,
       teamsDeferred: v?.teamsDeferred === true,
+      tripStatus: ["dismissed", "recorded"].includes(v?.tripStatus)
+        ? v.tripStatus
+        : "pending",
+      tripEventId: typeof v?.tripEventId === "string" ? v.tripEventId : null,
+      adminView: v?.adminView === "administrator" ? "administrator" : "manager",
+      resolvedAlerts: Array.isArray(v?.resolvedAlerts)
+        ? v.resolvedAlerts.filter((id: unknown) => typeof id === "string")
+        : [],
+      notificationChannel: ["teams", "none"].includes(v?.notificationChannel)
+        ? v.notificationChannel
+        : "email",
     };
   } catch {
-    return { tourActive: false, teamsDeferred: false };
+    return defaults();
   }
 }
 const ExperienceContext = createContext<{
   presentation: PresentationState;
   setTour: (active: boolean) => void;
-  deferTeams: (deferred: boolean) => void;
+  updatePresentation: (changes: Partial<PresentationState>) => void;
+  deferAgent: (deferred: boolean) => void;
   resetVersion: number;
   resetPresentation: () => void;
 } | null>(null);
@@ -43,14 +71,16 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
     <ExperienceContext.Provider
       value={{
         presentation,
+        updatePresentation: (changes) =>
+          setPresentation((s) => ({ ...s, ...changes })),
         setTour: (active) =>
           setPresentation((s) => ({ ...s, tourActive: active })),
-        deferTeams: (deferred) =>
+        deferAgent: (deferred) =>
           setPresentation((s) => ({ ...s, teamsDeferred: deferred })),
         resetVersion,
         resetPresentation: () => {
           clearScanDrafts();
-          setPresentation({ tourActive: false, teamsDeferred: false });
+          setPresentation(defaults());
           setResetVersion((v) => v + 1);
         },
       }}

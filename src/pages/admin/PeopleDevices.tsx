@@ -2,16 +2,21 @@ import { ChevronRight, MapPin, Plus, Radio, Search, Users } from "lucide-react";
 import { useState } from "react";
 import { Button, Empty, Modal, Panel, SourceIcon } from "../../components/ui";
 import { departments, employees, sourceMeta } from "../../data/seed";
+import { useExperience } from "../../store/experience";
 import { addEvent, useDemo } from "../../store/demo";
 import type { Device } from "../../types";
 import { dateTime } from "../../utils/stats";
 export function People() {
+  const { presentation } = useExperience();
+  const administrator = presentation.adminView === "administrator";
   const { state } = useDemo();
   const [tab, setTab] = useState("部門");
   const [query, setQuery] = useState("");
   const [dept, setDept] = useState("全部部門");
   const [selected, setSelected] = useState("");
-  const chosen = employees.find((e) => e.id === selected);
+  const chosen = administrator
+    ? employees.find((e) => e.id === selected)
+    : undefined;
   const allDept = departments.filter(
     (d) => (dept === "全部部門" || d === dept) && d.includes(query),
   );
@@ -24,7 +29,7 @@ export function People() {
     <>
       <div className="admin-page-head">
         <div>
-          <h1>員工與部門</h1>
+          <h1>{administrator ? "員工與部門" : "部門參與"}</h1>
           <p>管理團隊名單與永續任務參與。</p>
         </div>
         <span className="outlined-tag">
@@ -40,19 +45,21 @@ export function People() {
             >
               部門名單
             </button>
-            <button
-              className={tab === "員工" ? "active" : ""}
-              onClick={() => setTab("員工")}
-            >
-              員工名單
-            </button>
+            {administrator && (
+              <button
+                className={tab === "員工" ? "active" : ""}
+                onClick={() => setTab("員工")}
+              >
+                員工名單
+              </button>
+            )}
           </div>
           <div className="admin-filters">
             <label>
               <Search size={16} />
               <input
-                placeholder="搜尋姓名或部門"
-                aria-label="搜尋姓名或部門"
+                placeholder={administrator ? "搜尋姓名或部門" : "搜尋部門"}
+                aria-label={administrator ? "搜尋姓名或部門" : "搜尋部門"}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -69,7 +76,7 @@ export function People() {
             </select>
           </div>
         </div>
-        {tab === "部門" ? (
+        {!administrator || tab === "部門" ? (
           <div
             className="table-scroll"
             tabIndex={0}
@@ -192,49 +199,54 @@ export function People() {
           以團隊參與與激勵成果為主；不呈現個人即時位置、工作內容或監控資訊，積分不作為績效評定。
         </span>
       </div>
-      {selected && (
-        <Modal
-          title={chosen ? chosen.name : selected}
-          onClose={() => setSelected("")}
-        >
-          <p>
-            {chosen
-              ? `${chosen.department} · 青禾科技團隊成員`
-              : "青禾科技團隊永續參與摘要"}
-          </p>
-          <dl className="detail-list">
-            <div>
-              <dt>參與任務</dt>
-              <dd>
-                {chosen
-                  ? chosen.tasks +
-                    (chosen.id === "e01" ? state.claimed.length : 0)
-                  : employees
-                      .filter((e) => e.department === selected)
-                      .reduce((a, e) => a + e.tasks, 0) +
-                    (selected === "產品設計部" ? state.claimed.length : 0)}{" "}
-                次
-              </dd>
-            </div>
-            <div>
-              <dt>激勵積分</dt>
-              <dd>
-                {chosen
-                  ? chosen.points + (chosen.id === "e01" ? state.exp - 680 : 0)
-                  : employees
-                      .filter((e) => e.department === selected)
-                      .reduce((a, e) => a + e.points, 0) +
-                    (selected === "產品設計部" ? state.exp - 680 : 0)}{" "}
-                分
-              </dd>
-            </div>
-            <div>
-              <dt>資料類型</dt>
-              <dd>資料彙總</dd>
-            </div>
-          </dl>
-        </Modal>
-      )}
+      {selected &&
+        (administrator ||
+          departments.includes(selected as (typeof departments)[number])) && (
+          <Modal
+            title={chosen ? chosen.name : selected}
+            onClose={() => setSelected("")}
+          >
+            <p>
+              {chosen
+                ? `${chosen.department} · 青禾科技團隊成員`
+                : "青禾科技團隊永續參與摘要"}
+            </p>
+            <dl className="detail-list">
+              <div>
+                <dt>參與任務</dt>
+                <dd>
+                  {chosen
+                    ? chosen.tasks +
+                      (chosen.id === "e01" ? state.claimed.length : 0)
+                    : employees
+                        .filter((e) => e.department === selected)
+                        .reduce((a, e) => a + e.tasks, 0) +
+                      (selected === "產品設計部"
+                        ? state.claimed.length
+                        : 0)}{" "}
+                  次
+                </dd>
+              </div>
+              <div>
+                <dt>激勵積分</dt>
+                <dd>
+                  {chosen
+                    ? chosen.points +
+                      (chosen.id === "e01" ? state.exp - 680 : 0)
+                    : employees
+                        .filter((e) => e.department === selected)
+                        .reduce((a, e) => a + e.points, 0) +
+                      (selected === "產品設計部" ? state.exp - 680 : 0)}{" "}
+                  分
+                </dd>
+              </div>
+              <div>
+                <dt>資料類型</dt>
+                <dd>資料彙總</dd>
+              </div>
+            </dl>
+          </Modal>
+        )}
     </>
   );
 }

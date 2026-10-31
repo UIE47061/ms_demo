@@ -28,15 +28,15 @@ export function Demo() {
       <main>
         <div className="demo-intro">
           <div>
-            <span className="service-kicker">四段操作 · 約 90 秒行動旅程</span>
+            <span className="service-kicker">五段操作 · 一趟完整行動旅程</span>
             <h1>
               一個人的小行動，
               <br />
               整個團隊的下一步。
             </h1>
             <p>
-              從一張高鐵票開始，看看資料如何經過 AI 處理流程、回到
-              Teams，再成為主管的洞察。
+              從 Outlook 行程開始，核對車票、完成回收與桌面節能，再回到 Power BI
+              主管洞察。
             </p>
             <button
               className="btn demo-start"

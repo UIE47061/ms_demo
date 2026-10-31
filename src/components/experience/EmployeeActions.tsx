@@ -19,7 +19,7 @@ export function taskRoute(id: string) {
     : id === "recycle"
       ? "/app/trash-scan"
       : id === "power"
-        ? "/app/assistant"
+        ? "/agent"
         : "/app/missions";
 }
 export function InlineReward({ id }: { id: string }) {

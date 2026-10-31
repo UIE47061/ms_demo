@@ -14,14 +14,16 @@ test("差旅編輯、重整、跨端同步、任務防重複領獎及重設", as
     page.getByRole("heading", { name: "確認旅程資訊" }),
   ).toBeVisible();
   await page.getByLabel("終點").fill("左營");
-  await page.getByLabel("估算碳排（kg CO₂e・待確認數值）").fill("8.25");
+  await page.getByText("調整票價、里程與估算比例", { exact: true }).click();
+  await page.getByLabel("里程（km）", { exact: true }).fill("235");
+  await expect(page.getByTestId("travel-emission")).toHaveText("8.26");
   await page.getByRole("button", { name: "確認登錄", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "旅程已記錄！" }),
   ).toBeVisible();
   const added = await state(page);
   expect(added.events.length).toBe(initial.events.length + 1);
-  expect(added.events[0].emission).toBe(8.25);
+  expect(added.events[0].emission).toBe(8.26);
   expect(added.events[0].title).toContain("左營");
   expect(added.progress.transit).toBe(1);
   await page.getByRole("link", { name: "查看碳足跡" }).click();
@@ -29,6 +31,7 @@ test("差旅編輯、重整、跨端同步、任務防重複領獎及重設", as
   await page.reload();
   expect((await state(page)).events).toHaveLength(initial.events.length + 1);
   await page.goto("/admin/dashboard");
+  await page.getByLabel("檢視身分").selectOption("administrator");
   await expect(page.getByText("臺灣高鐵差旅・臺北 → 左營")).toBeVisible();
   await page.goto("/app/missions");
   const mission = page
@@ -105,6 +108,7 @@ test("上傳僅預覽、辨識取消後可重試、表單驗證", async ({ page 
 test("企業篩選、設備事件跨端、兌換審核、報告快照與列印", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/admin/dashboard");
+  await page.getByLabel("檢視身分").selectOption("administrator");
   const initial = await state(page);
   const metric = page.locator(".metric-value").first();
   const all = await metric.textContent();
@@ -191,6 +195,7 @@ test("全部路由與手機及桌面排版沒有橫向溢出", async ({ page }) 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/admin/dashboard");
+  await page.getByLabel("檢視身分").selectOption("administrator");
   await page.screenshot({
     path: "test-results/screenshots/admin-desktop.png",
     fullPage: true,
@@ -211,6 +216,7 @@ test("全部路由與手機及桌面排版沒有橫向溢出", async ({ page }) 
 test("部門與設備表格保留搜尋、詳情、篩選及手機導覽", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/admin/people");
+  await page.getByLabel("檢視身分").selectOption("administrator");
   await expect(page.locator(".department-table tbody tr")).toHaveCount(4);
   await page.getByRole("button", { name: "查看產品設計部詳情" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();

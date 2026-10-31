@@ -13,6 +13,9 @@ import { Integrations } from "../pages/admin/Integrations";
 import { Devices, People } from "../pages/admin/PeopleDevices";
 import { Reports, Rewards } from "../pages/admin/ReportsRewards";
 import { Demo } from "../pages/demo/Demo";
+import { Agent } from "../pages/Agent";
+import { Trips } from "../pages/employee/Trips";
+import { Alerts } from "../pages/admin/Alerts";
 import { Assistant } from "../pages/employee/Assistant";
 import { EmployeeHome } from "../pages/employee/Home";
 import {
@@ -34,11 +37,13 @@ export default function App() {
           <TourFrame>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/agent" element={<Agent />} />
               <Route path="/guide" element={<Demo />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/app" element={<EmployeeLayout />}>
                 <Route index element={<Navigate replace to="home" />} />
                 <Route path="home" element={<EmployeeHome />} />
+                <Route path="trips" element={<Trips />} />
                 <Route path="footprint" element={<Footprint />} />
                 <Route path="travel-scan" element={<TravelScan />} />
                 <Route path="trash-scan" element={<TrashScan />} />
@@ -51,6 +56,7 @@ export default function App() {
                 <Route index element={<Navigate replace to="dashboard" />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="alerts" element={<Alerts />} />
                 <Route path="people" element={<People />} />
                 <Route path="devices" element={<Devices />} />
                 <Route path="reports" element={<Reports />} />

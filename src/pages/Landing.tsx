@@ -62,7 +62,7 @@ export function Landing() {
           <div>
             <span className="micro-label">不只是一張碳排報表</span>
             <h2>
-              四個日常，
+              五個行動，
               <br />
               串成一個完整的工作體驗。
             </h2>
@@ -78,21 +78,16 @@ export function Landing() {
             <Link className={`scenario ${s.tone}`} key={s.path} to={s.path}>
               <span className="scenario-no">0{i + 1}</span>
               <span className="scenario-service">{s.service}</span>
-              <ActionArt
-                kind={
-                  (["travel", "recycle", "teams", "insights"] as ActionKind[])[
-                    i
-                  ]
-                }
-              />
+              <ActionArt kind={s.art as ActionKind} />
               <h3>{s.title}</h3>
               <p>
                 {
                   [
-                    "從一張車票開始，整理差旅資訊。",
+                    "從行事曆找到出差，回程補上車票。",
+                    "核對旅程、計算依據與資料來源。",
                     "完成分類回收，記錄今天的行動。",
-                    "午休提醒一下，節能變得自然。",
-                    "從同一份資料，找到下一步。",
+                    "在電腦收到提醒，回到 App 看見回饋。",
+                    "比較部門、處理異常，開啟 Power BI。",
                   ][i]
                 }
               </p>
