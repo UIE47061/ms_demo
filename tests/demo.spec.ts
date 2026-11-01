@@ -32,6 +32,7 @@ test("差旅編輯、重整、跨端同步、任務防重複領獎及重設", as
   expect((await state(page)).events).toHaveLength(initial.events.length + 1);
   await page.goto("/admin/dashboard");
   await page.getByLabel("檢視身分").selectOption("administrator");
+  await page.getByText("最近活動", { exact: true }).click();
   await expect(page.getByText("臺灣高鐵差旅・臺北 → 左營")).toBeVisible();
   await page.goto("/app/missions");
   const mission = page
@@ -113,10 +114,11 @@ test("企業篩選、設備事件跨端、兌換審核、報告快照與列印",
   const metric = page.locator(".metric-value").first();
   const all = await metric.textContent();
   await page.getByLabel("部門篩選", { exact: true }).selectOption("產品設計部");
-  expect(await metric.textContent()).not.toBe(all);
+  await expect(metric).not.toHaveText(all!);
   const month = await metric.textContent();
   await page.getByLabel("日期範圍").selectOption("week");
-  expect(await metric.textContent()).not.toBe(month);
+  await expect(metric).not.toHaveText(month!);
+  await page.locator(".management-nav > summary").click();
   await page.getByRole("link", { name: /IoT 設備/ }).click();
   await page
     .getByRole("button", { name: "接收新事件", exact: true })
@@ -175,6 +177,7 @@ test("全部路由與手機及桌面排版沒有橫向溢出", async ({ page }) 
       "/app/profile",
       "/admin/dashboard",
       "/admin/analytics",
+      "/admin/powerbi",
       "/admin/people",
       "/admin/devices",
       "/admin/reports",

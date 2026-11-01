@@ -76,10 +76,19 @@ export function Alerts() {
                 <dd>{n(sum(events))} kg CO₂e</dd>
               </div>
             </dl>
-            <TrendChart data={daily(events)} compact />
-            <p className="fine-print">
-              圖表反映上述部門範圍，不代表個別設備用電趨勢。
-            </p>
+            {selected.kind === "source" ? (
+              <>
+                <TrendChart data={daily(events)} compact />
+              </>
+            ) : (
+              <details className="enterprise-disclosure">
+                <summary>查看部門排放背景</summary>
+                <TrendChart data={daily(events)} compact />
+                <p className="fine-print">
+                  此為部門排放背景，不代表個別設備用電。
+                </p>
+              </details>
+            )}
             <div className="alert-detail-actions">
               <button
                 className={done ? "btn-secondary" : "btn"}
@@ -95,8 +104,11 @@ export function Alerts() {
               >
                 {done ? "重新開啟" : "標記已處理"}
               </button>
-              <Link className="text-link" to="/admin/analytics">
-                回到主管洞察 →
+              <Link
+                className="text-link"
+                to={`/admin/analytics?${new URLSearchParams({ dept, period })}`}
+              >
+                前往碳排分析 →
               </Link>
             </div>
             {done && (
@@ -109,25 +121,31 @@ export function Alerts() {
           <Empty text="目前沒有需要追蹤的項目。" />
         )}
       </div>
-      <section className="notification-preference">
-        <div>
-          <h2>主管通知通路</h2>
-          <p>通知偏好只保留於工作空間，不會發送訊息。</p>
-        </div>
-        <select
-          aria-label="主管通知通路"
-          value={presentation.notificationChannel}
-          onChange={(e) =>
-            updatePresentation({
-              notificationChannel: e.target.value as "email" | "teams" | "none",
-            })
-          }
-        >
-          <option value="email">Email</option>
-          <option value="teams">Microsoft Teams</option>
-          <option value="none">只在工作空間查看</option>
-        </select>
-      </section>
+      <details className="enterprise-disclosure notification-settings">
+        <summary>通知設定</summary>
+        <section className="notification-preference">
+          <div>
+            <h2>主管通知通路</h2>
+            <p>通知偏好只保留於工作空間，不會發送訊息。</p>
+          </div>
+          <select
+            aria-label="主管通知通路"
+            value={presentation.notificationChannel}
+            onChange={(e) =>
+              updatePresentation({
+                notificationChannel: e.target.value as
+                  | "email"
+                  | "teams"
+                  | "none",
+              })
+            }
+          >
+            <option value="email">Email</option>
+            <option value="teams">Microsoft Teams</option>
+            <option value="none">只在工作空間查看</option>
+          </select>
+        </section>
+      </details>
     </>
   );
 }

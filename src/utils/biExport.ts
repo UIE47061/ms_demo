@@ -158,3 +158,46 @@ export function buildDepartmentBiTable(events: CarbonEvent[]): BiTable {
     ]),
   };
 }
+
+// Secure embed keeps Power BI account permissions; no public publish link or token.
+export function powerBiEmbedUrl(value: string): string | null {
+  const clean = validatePowerBiReportUrl(value);
+  if (!clean) return null;
+  const url = new URL(clean);
+  const guid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const path = url.pathname.match(
+    /^\/groups\/([^/]+)\/reports\/([^/]+)(?:\/([^/]+))?/,
+  );
+  const reportId = url.searchParams.get("reportId") || path?.[2];
+  if (!reportId || !guid.test(reportId)) return null;
+  const embed = new URL("https://app.powerbi.com/reportEmbed");
+  embed.searchParams.set("reportId", reportId);
+  embed.searchParams.set("autoAuth", "true");
+  const groupId = url.searchParams.get("groupId") || path?.[1];
+  if (groupId && guid.test(groupId)) embed.searchParams.set("groupId", groupId);
+  const tenant = url.searchParams.get("ctid");
+  if (tenant && guid.test(tenant)) embed.searchParams.set("ctid", tenant);
+  const page = url.searchParams.get("pageName") || path?.[3];
+  if (page && /^[a-z0-9_-]{1,100}$/i.test(page))
+    embed.searchParams.set("pageName", page);
+  return embed.toString();
+}
+
+// Open the full Power BI service for sign-in, even when an embed URL was saved.
+export function powerBiOpenUrl(value: string): string | null {
+  const clean = validatePowerBiReportUrl(value);
+  if (!clean) return null;
+  if (new URL(clean).pathname !== "/reportEmbed") return clean;
+  const normalized = powerBiEmbedUrl(clean);
+  if (!normalized) return "https://app.powerbi.com/";
+  const params = new URL(normalized).searchParams;
+  const group = params.get("groupId") || "me";
+  const page = params.get("pageName");
+  const open = new URL(
+    `https://app.powerbi.com/groups/${group}/reports/${params.get("reportId")}${page ? `/${page}` : ""}`,
+  );
+  const tenant = params.get("ctid");
+  if (tenant) open.searchParams.set("ctid", tenant);
+  return open.toString();
+}

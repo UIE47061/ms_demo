@@ -89,10 +89,7 @@ export function Reports() {
       <div className="report-workspace">
         <aside className="report-settings no-print">
           <Panel>
-            <SectionHead
-              title="報告設定"
-              subtitle="依所選範圍生成報告，支援列印與另存 PDF。"
-            />
+            <SectionHead title="報告設定" />
             <div className="report-controls">
               <label>
                 報告月份
@@ -435,38 +432,41 @@ export function Rewards() {
           ) && <p className="empty">目前沒有此狀態的兌換申請。</p>}
         </div>
       </Panel>
-      <div className="two-cols">
-        <Panel>
-          <SectionHead
-            title="任務參與情況"
-            subtitle="歷史任務完成基準與本次互動同步加總"
-          />
-          {departments.map((d, i) => {
-            const tasks =
-              employees
-                .filter((e) => e.department === d)
-                .reduce((a, e) => a + e.tasks, 0) +
-              (d === "產品設計部" ? state.claimed.length : 0);
-            return (
-              <div className="reward-participation" key={d}>
-                <span>{d}</span>
-                <div className="progress">
-                  <i style={{ width: `${(tasks / 60) * 100}%` }} />
+      <details className="enterprise-disclosure">
+        <summary>任務參與與獎勵說明</summary>{" "}
+        <div className="two-cols">
+          <Panel>
+            <SectionHead
+              title="任務參與情況"
+              subtitle="歷史任務完成基準與本次互動同步加總"
+            />
+            {departments.map((d, i) => {
+              const tasks =
+                employees
+                  .filter((e) => e.department === d)
+                  .reduce((a, e) => a + e.tasks, 0) +
+                (d === "產品設計部" ? state.claimed.length : 0);
+              return (
+                <div className="reward-participation" key={d}>
+                  <span>{d}</span>
+                  <div className="progress">
+                    <i style={{ width: `${(tasks / 60) * 100}%` }} />
+                  </div>
+                  <b>{tasks}/60</b>
                 </div>
-                <b>{tasks}/60</b>
-              </div>
-            );
-          })}
-        </Panel>
-        <Panel className="reward-info">
-          <h2>獎勵計算說明</h2>
-          <p>
-            碳幣、EXP
-            與積分用於鼓勵參與。任務獎勵不會折抵排放，不等同碳權，也不作為正式盤查依據。
-          </p>
-          <span className="status">申請審核</span>
-        </Panel>
-      </div>
+              );
+            })}
+          </Panel>
+          <Panel className="reward-info">
+            <h2>獎勵計算說明</h2>
+            <p>
+              碳幣、EXP
+              與積分用於鼓勵參與。任務獎勵不會折抵排放，不等同碳權，也不作為正式盤查依據。
+            </p>
+            <span className="status">申請審核</span>
+          </Panel>
+        </div>
+      </details>
     </>
   );
 }

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { createSeed } from "../data/seed";
-import { buildBiTables, biCsv, validatePowerBiReportUrl } from "./biExport";
+import {
+  buildBiTables,
+  biCsv,
+  powerBiEmbedUrl,
+  powerBiOpenUrl,
+  validatePowerBiReportUrl,
+} from "./biExport";
 import { selectEvents, sum } from "./stats";
 describe("Power BI 與 Fabric 資料交換", () => {
   it("保留原始事件與數值，月度與歷史分層不重複入帳", () => {
@@ -74,5 +80,68 @@ describe("Power BI 與 Fabric 資料交換", () => {
       "https://app.powerbi.com/reportEmbed",
     ])
       expect(validatePowerBiReportUrl(u)).toBeNull();
+  });
+});
+
+describe("Power BI 安全內嵌網址", () => {
+  const report = "11111111-2222-3333-4444-555555555555";
+  const group = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+  it("另開登入使用完整服務網址，保留報表、租用戶與頁面，不沿用 embed 登入框", () => {
+    expect(
+      powerBiOpenUrl(
+        `https://app.powerbi.com/reportEmbed?reportId=${report}&groupId=${group}&ctid=${group}&pageName=ReportSection&autoAuth=true`,
+      ),
+    ).toBe(
+      `https://app.powerbi.com/groups/${group}/reports/${report}/ReportSection?ctid=${group}`,
+    );
+    expect(
+      powerBiOpenUrl(`https://app.powerbi.com/reportEmbed?reportId=${report}`),
+    ).toBe(`https://app.powerbi.com/groups/me/reports/${report}`);
+    const normal = `https://app.powerbi.com/groups/${group}/reports/${report}/ReportSection?experience=power-bi`;
+    expect(powerBiOpenUrl(normal)).toBe(normal);
+    expect(
+      powerBiOpenUrl("https://example.com/reportEmbed?reportId=" + report),
+    ).toBeNull();
+    expect(
+      powerBiOpenUrl("https://app.powerbi.com/reportEmbed?reportId=invalid"),
+    ).toBe("https://app.powerbi.com/");
+  });
+  it("從報表路徑保留識別碼、工作區、頁面與租用戶，但不轉送其他參數", () => {
+    const result = new URL(
+      powerBiEmbedUrl(
+        `https://app.powerbi.com/groups/${group}/reports/${report}/ReportSection02?ctid=${group}&token=secret&filter=x`,
+      )!,
+    );
+    expect(result.origin + result.pathname).toBe(
+      "https://app.powerbi.com/reportEmbed",
+    );
+    expect(Object.fromEntries(result.searchParams)).toEqual({
+      reportId: report,
+      autoAuth: "true",
+      groupId: group,
+      ctid: group,
+      pageName: "ReportSection02",
+    });
+  });
+  it("支援我的工作區與 secure embed，拒絕非報表或無效識別碼", () => {
+    expect(
+      new URL(
+        powerBiEmbedUrl(`https://app.powerbi.com/groups/me/reports/${report}`)!,
+      ).searchParams.has("groupId"),
+    ).toBe(false);
+    expect(
+      new URL(
+        powerBiEmbedUrl(
+          `https://app.powerbi.com/reportEmbed?reportId=${report}&groupId=${group}`,
+        )!,
+      ).searchParams.get("groupId"),
+    ).toBe(group);
+    for (const value of [
+      "https://example.com/reportEmbed?reportId=" + report,
+      "https://app.powerbi.com/groups/me/reports/not-a-guid",
+      "https://app.powerbi.com/view?r=public",
+      "javascript:alert(1)",
+    ])
+      expect(powerBiEmbedUrl(value)).toBeNull();
   });
 });

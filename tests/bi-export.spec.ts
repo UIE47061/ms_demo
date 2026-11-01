@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs/promises";
 test("Power BI 下載使用目前篩選快照並保留數值", async ({ page }) => {
-  await page.goto("/admin/analytics");
+  await page.goto("/admin/powerbi?tab=data");
   await page.getByLabel("檢視身分").selectOption("administrator");
   await page.getByLabel("部門篩選", { exact: true }).selectOption("產品設計部");
   await page.getByLabel("日期範圍").selectOption("week");
@@ -28,7 +28,7 @@ test("Power BI 下載使用目前篩選快照並保留數值", async ({ page }) 
   expect(bytes.subarray(0, 2).toString()).toBe("PK");
 });
 test("報表網址可設定、重整保留並直接開啟，不接受任意網站", async ({ page }) => {
-  await page.goto("/admin/analytics");
+  await page.goto("/admin/powerbi?tab=data");
   await page.getByText("匯入步驟與報表網址設定", { exact: true }).click();
   await page.getByLabel("Power BI 報表網址").fill("https://example.com");
   await page.getByRole("button", { name: "儲存報表網址" }).click();
@@ -41,7 +41,7 @@ test("報表網址可設定、重整保留並直接開啟，不接受任意網�
     page.getByRole("link", { name: "開啟已設定的 Power BI 報表" }),
   ).toHaveAttribute("href", url);
   await expect(
-    page.getByRole("link", { name: "前往 Power BI" }),
+    page.getByRole("link", { name: "在 Power BI 開啟", exact: true }),
   ).toHaveAttribute("href", url);
   await page.reload();
   await expect(

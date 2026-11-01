@@ -41,7 +41,8 @@ npm run preview
 | `/app/assistant`      | App 內個人問答與任務建議          |
 | `/app/profile`        | 成就、個人設定與資料重設          |
 | `/admin/dashboard`    | 企業總覽、異常與部門分析          |
-| `/admin/analytics`    | 排放分析、問答、Power BI 檔案交換 |
+| `/admin/analytics`    | 來源、部門與問答，切換檢視        |
+| `/admin/powerbi`      | Power BI 報表檢視、連結與資料匯出 |
 | `/admin/people`       | 員工與部門查詢                    |
 | `/admin/devices`      | 設備查詢與事件接收                |
 | `/admin/reports`      | 報告設定、預覽與列印 PDF          |
@@ -60,7 +61,7 @@ npm run preview
 
 本專案沒有後端、資料庫或 API 金鑰。人物與事件使用本機初始資料；上傳圖片僅供預覽，憑證流程載入預設欄位，不對任意圖片執行 OCR。Microsoft AI、IoT、Outlook 與 Eco-Agent 的頁面用於操作與架構預覽，尚未連接服務或控制實體設備；Teams 只保留為可選主管通知通路。問答由目前事件與任務計算。碳幣、EXP 與挑戰進度不折抵排放。
 
-Power BI／Fabric 支援真正的 Excel／CSV 檔案交換。可由分析頁匯出目前篩選結果，或下載 `public/bi/` 中的初始 Excel；在 Power BI 建立報表後，將網址存回分析頁即可開啟。報表權限由 Microsoft 帳號決定，檔案是手動快照，不會自動同步。完整匯入步驟見 [匯入說明](public/bi/匯入說明.md)。
+Power BI／Fabric 支援真正的 Excel／CSV 檔案交換。可由「Power BI 報表 → 資料與設定」匯出目前篩選結果，或下載 `public/bi/` 中的初始 Excel；在 Power BI 建立報表後，將網址存回「Power BI 報表」即可另開，或主動選擇在頁內檢視。報表權限由 Microsoft 帳號決定，檔案是手動快照，不會自動同步。完整匯入步驟見 [匯入說明](public/bi/匯入說明.md)。
 
 ## 檔案組織
 
@@ -102,9 +103,19 @@ npm run test:pages
 - 差旅：修改日期、起訖站、里程與參考比例，估算結果唯讀。比例由既有資料集的 165 km／5.8 kg CO₂e 換算，不是官方係數；起訖站不會自動查詢里程。確認後將計算依據寫入事件說明，沿用原事件格式。
 - Eco 小幫手：保留三個依個人資料計算的問題；離座提醒移至 `/agent`。提醒的暫緩與領獎沿用共用狀態，每項獎勵一次為限。
 - 主管：企業端預設部門彙總。工具列「檢視身分」切換為管理員後可查看個人名單、事件、設備設定與兌換。此切換只改呈現，不是登入、授權或 RLS；公開靜態資料仍可被直接讀取。
-- Power BI：主管 CSV 為部門／來源彙總；管理員保留逐筆 CSV、初始 Excel 與完整匯入包。報表以設定的外部連結開啟，不宣稱即時同步或嵌入。
+- Power BI：主管 CSV 為部門／來源彙總；管理員保留逐筆 CSV、初始 Excel 與完整匯入包。報表以設定的外部連結另開；有效報表識別碼也能使用 Microsoft 安全內嵌方式檢視，需要帳號登入與報表權限。本站篩選不會直接操控外部報表。
 - 異常：設備警告／離線與來源占比超過 50% 的觀察項目，可檢視並標記已處理。處理註記不修改設備狀態或排放。Email／Teams 只儲存偏好，不寄送訊息。
 
-行程、身分視角、異常註記及通知偏好儲存在既有呈現層 sessionStorage；舊欄位相容，共用重設會一併清除。不新增後端、資料庫、API Key 或 Microsoft 服務呼叫。
+行程、身分視角、異常註記及通知偏好儲存在既有呈現層 sessionStorage；舊欄位相容，共用重設會一併清除。不新增後端、資料庫、API Key 或 Microsoft 業務 API；Power BI 僅透過使用者主動開啟的報表頁面存取。
 
 主要畫面：[Outlook 待辦](docs/screenshots/outlook-mobile.png)、[Eco-Agent 桌面提醒](docs/screenshots/agent-desktop.png)、[異常追蹤](docs/screenshots/alerts-desktop.png)。
+
+## 企業分析工作台（2026/11/01）
+
+側欄保留總覽、分析、Power BI 報表、異常追蹤及 ESG 報告，員工／設備／獎勵集中在「管理」。整合架構、說明、員工端切換、旅程與重設移至右上角「工作空間選項」。
+
+總覽依序呈現四項指標、趨勢與來源、部門與待處理事項。任務摘要與管理員的最近活動按需展開。分析以來源、部門、資料問答與管理員活動明細切換；部門及期間透過網址保存，前往 Power BI 時沿用。
+
+Power BI 報表設定只儲存在目前瀏覽器。有效的報表 GUID 可產生 [Microsoft 安全內嵌網址](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-embed-secure)，以 HTTPS 開啟且瀏覽器具備加密功能時，按下「在此檢視報表」才載入 iframe；HTTP 環境保留另開入口並說明原因。權限與登入由 Power BI 執行。無法在內嵌環境登入時，可另開 Power BI 登入後返回按「重新載入報表」。即使保存的是 reportEmbed 網址，另開入口仍會轉成完整 Power BI 報表頁。未設定網址不會以本站圖表假冒 Power BI；外部報表仍是手動匯入的快照。沒有新增 API Key、登入 SDK 或自動資料同步。
+
+錄影順序與準備事項見 [企業端展示操作](docs/ENTERPRISE_DEMO.md)。畫面：[總覽](docs/screenshots/dashboard-desktop.png)、[分析](docs/screenshots/analytics-desktop.png)、[Power BI](docs/screenshots/powerbi-desktop.png)。

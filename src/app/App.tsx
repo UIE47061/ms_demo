@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { TourFrame } from "../components/experience/Tour";
 import { Landing } from "../pages/Landing";
+import { PowerBi } from "../pages/admin/PowerBi";
 import { Analytics, Dashboard } from "../pages/admin/Dashboard";
 import { Integrations } from "../pages/admin/Integrations";
 import { Devices, People } from "../pages/admin/PeopleDevices";
@@ -56,6 +57,7 @@ export default function App() {
                 <Route index element={<Navigate replace to="dashboard" />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="powerbi" element={<PowerBi />} />
                 <Route path="alerts" element={<Alerts />} />
                 <Route path="people" element={<People />} />
                 <Route path="devices" element={<Devices />} />

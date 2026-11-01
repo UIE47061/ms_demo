@@ -193,12 +193,15 @@ export function People() {
           </div>
         )}
       </Panel>
-      <div className="notice">
-        <Users size={19} />
-        <span>
-          以團隊參與與激勵成果為主；不呈現個人即時位置、工作內容或監控資訊，積分不作為績效評定。
-        </span>
-      </div>
+      <details className="enterprise-disclosure">
+        <summary>資料與隱私說明</summary>{" "}
+        <div className="notice">
+          <Users size={19} />
+          <span>
+            以團隊參與與激勵成果為主；不呈現個人即時位置、工作內容或監控資訊，積分不作為績效評定。
+          </span>
+        </div>
+      </details>
       {selected &&
         (administrator ||
           departments.includes(selected as (typeof departments)[number])) && (

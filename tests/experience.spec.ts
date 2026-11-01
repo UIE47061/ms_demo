@@ -52,6 +52,7 @@ test("五段導覽使用實際共用狀態，Eco-Agent 只領獎一次且成長�
   expect((await read(page)).coins).toBe(initial.coins + 40);
   await page.getByRole("button", { name: "下一段", exact: true }).click();
   await expect(page).toHaveURL(/admin\/analytics/);
+  await page.getByRole("button", { name: "資料問答", exact: true }).click();
   await page.getByRole("button", { name: "哪個來源占比最高？" }).click();
   await expect(page.locator(".data-agent .answer-source")).toContainText(
     `${initial.events.length + 2} 筆活動紀錄`,
@@ -106,6 +107,10 @@ test("主管問答隨篩選更新，來源與自訂欄位皆有預設界線", as
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/admin/analytics");
   await page.getByLabel("檢視身分").selectOption("administrator");
+  await page.getByRole("button", { name: "資料問答", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "資料問答", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   const initial = await read(page);
   await page.getByLabel("部門篩選", { exact: true }).selectOption("工程研發部");
   await page.getByLabel("日期範圍").selectOption("week");

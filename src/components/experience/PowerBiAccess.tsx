@@ -8,10 +8,12 @@ import {
   biCsv,
   buildBiTables,
   buildDepartmentBiTable,
+  powerBiOpenUrl,
   validatePowerBiReportUrl,
   type BiTable,
 } from "../../utils/biExport";
-export const REPORT_LINK_KEY = "eco-sensing-powerbi-report-url-v1";
+export { REPORT_LINK_KEY } from "../../hooks/usePowerBiReport";
+import { usePowerBiReport } from "../../hooks/usePowerBiReport";
 export function PowerBiAccess({
   events,
   scope,
@@ -24,17 +26,8 @@ export function PowerBiAccess({
   const { state, notify } = useDemo();
   const { presentation } = useExperience();
   const administrator = presentation.adminView === "administrator";
-  const [url, setUrl] = useState(() => {
-    try {
-      return (
-        validatePowerBiReportUrl(localStorage.getItem(REPORT_LINK_KEY) || "") ||
-        ""
-      );
-    } catch {
-      return "";
-    }
-  });
-  const [saved, setSaved] = useState(url);
+  const { reportUrl: saved, saveReport, clearReport } = usePowerBiReport();
+  const [url, setUrl] = useState(saved);
   const [error, setError] = useState("");
   function download(table: BiTable, filename: string) {
     const blob = new Blob([biCsv(table)], { type: "text/csv;charset=utf-8" });
@@ -57,8 +50,7 @@ export function PowerBiAccess({
       return;
     }
     try {
-      localStorage.setItem(REPORT_LINK_KEY, clean);
-      setSaved(clean);
+      if (!saveReport(clean)) throw new Error("storage");
       onReportChange?.(clean);
       setUrl(clean);
       setError("");
@@ -74,17 +66,16 @@ export function PowerBiAccess({
     >
       <div className="powerbi-access-heading">
         <div>
-          <span className="service-kicker gold">
-            在真正的 MICROSOFT 平台查看
-          </span>
-          <h2>Power BI 報表與資料交換</h2>
+          <span className="service-kicker gold">POWER BI · FABRIC</span>
+          <h2>分析資料匯出</h2>
           <p>
-            下載資料、匯入工作區，再開啟你建立的報表。這裡是檔案交換，尚未自動同步。
+            匯出目前範圍，匯入 Power BI 或 Fabric
+            建立報表。資料以檔案交換，不會自動同步。
           </p>
         </div>
         <a
           className="btn-secondary"
-          href={saved || "https://app.powerbi.com/"}
+          href={powerBiOpenUrl(saved) || "https://app.powerbi.com/"}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -205,10 +196,10 @@ export function PowerBiAccess({
                 <button
                   className="text-link"
                   onClick={() => {
-                    try {
-                      localStorage.removeItem(REPORT_LINK_KEY);
-                    } catch {}
-                    setSaved("");
+                    if (!clearReport()) {
+                      setError("此瀏覽器無法清除網址。");
+                      return;
+                    }
                     onReportChange?.("");
                     setUrl("");
                     notify("已清除報表網址");

@@ -27,6 +27,7 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
     "/admin/alerts",
     "/admin/dashboard",
     "/admin/analytics",
+    "/admin/powerbi",
     "/admin/people",
     "/admin/devices",
     "/admin/reports",
@@ -44,9 +45,10 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
   await page.goto(`${baseURL}#/admin/analytics`);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "主管洞察", exact: true }),
+    page.getByRole("heading", { name: "碳排分析", exact: true }),
   ).toBeVisible();
   await page.getByLabel("檢視身分").selectOption("administrator");
+  await page.goto(`${baseURL}#/admin/powerbi?tab=data`);
   const workbook = page.getByRole("link", { name: "下載初始 Excel" });
   await expect(workbook).toHaveAttribute(
     "href",
@@ -97,6 +99,8 @@ test("場景可重播、沒有自動入帳，減少動態效果偏好會停止�
       "/agent",
       "/admin/alerts",
       "/admin/dashboard",
+      "/admin/analytics",
+      "/admin/powerbi",
     ]) {
       await page.goto(`${baseURL}#${path}`);
       await page.reload();
@@ -121,6 +125,12 @@ test("場景可重播、沒有自動入帳，減少動態效果偏好會停止�
         ),
         `${path} at ${width}: ${JSON.stringify(overflow)}`,
       ).toBe(true);
+      if (width === 390 && path.startsWith("/admin/"))
+        await page.screenshot({
+          path: `test-results/screenshots/enterprise-${path.split("/").pop()}-mobile.png`,
+          fullPage: true,
+          animations: "disabled",
+        });
       if (path === "/app/home") {
         const art = await page
           .locator(".quick-scans .action-art")
@@ -135,6 +145,7 @@ test("場景可重播、沒有自動入帳，減少動態效果偏好會停止�
     ["/", "landing-desktop"],
     ["/admin/dashboard", "dashboard-desktop"],
     ["/admin/analytics", "analytics-desktop"],
+    ["/admin/powerbi", "powerbi-desktop"],
   ]) {
     await page.goto(`${baseURL}#${path}`);
     await page.reload();

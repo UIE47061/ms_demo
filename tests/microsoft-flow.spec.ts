@@ -105,8 +105,11 @@ test("主管預設只有彙總，匯出無姓名，切換管理員可保留完�
   ).toHaveCount(0);
   await page.goto("/admin/analytics");
   await page.getByLabel("部門篩選", { exact: true }).selectOption("產品設計部");
+  await page.getByRole("button", { name: "資料問答", exact: true }).click();
   await page.getByRole("button", { name: "最近一天排放多少？" }).click();
   await expect(page.locator(".data-agent .answer-evidence")).toHaveCount(0);
+  await page.getByRole("link", { name: "前往報表 →" }).click();
+  await page.getByRole("button", { name: "資料與設定", exact: true }).click();
   const download = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "下載部門彙總 CSV", exact: true })
@@ -150,17 +153,21 @@ test("異常處理與通知偏好會保存，不改動設備與排放；重設�
   await page.getByLabel("日期範圍").selectOption("week");
   await expect(page.locator(".alert-detail")).toContainText("10/24–10/27");
   await page.getByRole("button", { name: "標記已處理", exact: true }).click();
+  await page.getByText("通知設定", { exact: true }).click();
   await page.getByLabel("主管通知通路").selectOption("teams");
   await page.reload();
   await expect(
     page.getByRole("button", { name: "重新開啟", exact: true }),
   ).toBeVisible();
+  await page.getByText("通知設定", { exact: true }).click();
   await expect(page.getByLabel("主管通知通路")).toHaveValue("teams");
   expect(await read(page)).toEqual(initial);
   await page.getByLabel("檢視身分").selectOption("administrator");
   page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: "工作空間選項", exact: true }).click();
   await page.getByRole("button", { name: "重設資料", exact: true }).click();
   await expect(page.getByLabel("檢視身分")).toHaveValue("manager");
+  await page.getByText("通知設定", { exact: true }).click();
   await expect(page.getByLabel("主管通知通路")).toHaveValue("email");
   await expect(
     page.getByRole("button", { name: "標記已處理", exact: true }),
@@ -184,6 +191,7 @@ test("新流程各頁面於四種寬度沒有溢出，主要頁面保存截圖",
       "/app/assistant",
       "/agent",
       "/admin/analytics",
+      "/admin/powerbi",
       "/admin/alerts",
       "/admin/people",
     ]) {
@@ -204,7 +212,12 @@ test("新流程各頁面於四種寬度沒有溢出，主要頁面保存截圖",
         });
       if (
         width === 1440 &&
-        ["/agent", "/admin/analytics", "/admin/alerts"].includes(route)
+        [
+          "/agent",
+          "/admin/analytics",
+          "/admin/powerbi",
+          "/admin/alerts",
+        ].includes(route)
       )
         await page.screenshot({
           path: `test-results/screenshots/ms-${route.split("/").pop()}-desktop.png`,

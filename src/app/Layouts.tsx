@@ -11,7 +11,8 @@ import {
   LayoutDashboard,
   Menu,
   MessageSquare,
-  Network,
+  Ellipsis,
+  ChartColumn,
   Play,
   Radio,
   Target,
@@ -25,14 +26,16 @@ import { useExperience } from "../store/experience";
 import { AdminOnly } from "../components/experience/AdminView";
 import { Brand, Modal, ResetButton, SkipLink } from "../components/ui";
 const adminLinks = [
-  ["dashboard", "企業總覽", LayoutDashboard],
-  ["analytics", "主管洞察", ChartNoAxesCombined],
-  ["people", "員工與部門", Users],
+  ["dashboard", "總覽", LayoutDashboard],
+  ["analytics", "分析", ChartNoAxesCombined],
+  ["powerbi", "Power BI 報表", ChartColumn],
   ["alerts", "異常追蹤", Bell],
-  ["devices", "IoT 設備", Radio],
   ["reports", "ESG 報告", FileChartColumn],
+] as const;
+const managementLinks = [
+  ["people", "員工與部門", Users],
+  ["devices", "IoT 設備", Radio],
   ["rewards", "獎勵管理", Gift],
-  ["integrations", "Microsoft 流程", Network],
 ] as const;
 const appLinks = [
   ["home", "首頁", House],
@@ -53,6 +56,27 @@ export function AdminLayout() {
   const [help, setHelp] = useState(false);
   const [bell, setBell] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [tools, setTools] = useState(false);
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const toolsTrigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!tools) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!toolsRef.current?.contains(event.target as Node)) setTools(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setTools(false);
+        toolsTrigger.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [tools]);
   useRouteReset();
   const sidebarRef = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -63,9 +87,9 @@ export function AdminLayout() {
     const elements = () =>
       Array.from(
         sidebarRef.current?.querySelectorAll<HTMLElement>(
-          "a[href],button:not(:disabled)",
+          "a[href],button:not(:disabled),summary",
         ) || [],
-      );
+      ).filter((element) => element.getClientRects().length > 0);
     elements()[1]?.focus();
     function keydown(e: KeyboardEvent) {
       if (document.querySelector("dialog[open]")) return;
@@ -94,11 +118,15 @@ export function AdminLayout() {
     };
   }, [menu]);
   const title =
-    adminLinks.find(([path]) => location.pathname.endsWith(path))?.[1] ||
-    "企業總覽";
-  useEffect(() => setMenu(false), [location.pathname]);
+    [...adminLinks, ...managementLinks, ["integrations", "整合架構"]].find(
+      ([path]) => location.pathname.endsWith(path),
+    )?.[1] || "企業總覽";
+  useEffect(() => {
+    setMenu(false);
+    setTools(false);
+  }, [location.pathname]);
   return (
-    <div className={`admin-shell ${menu ? "menu-open" : ""}`}>
+    <div className={`admin-shell enterprise-shell ${menu ? "menu-open" : ""}`}>
       <SkipLink target="main-content" />
       <aside
         className="sidebar"
@@ -131,27 +159,29 @@ export function AdminLayout() {
           {adminLinks.map(([path, label, Icon]) => (
             <NavLink key={path} to={`/admin/${path}`}>
               <Icon size={17} />
-              <span>
-                {path === "people" && !administrator ? "部門參與" : label}
-              </span>
-              {path === "devices" && <span className="nav-count">8</span>}
+              <span>{label}</span>
             </NavLink>
           ))}
         </nav>
+        <details
+          className="management-nav"
+          open={managementLinks.some(([path]) =>
+            location.pathname.endsWith(path),
+          )}
+        >
+          <summary>管理</summary>
+          <nav aria-label="管理功能">
+            {managementLinks.map(([path, label, Icon]) => (
+              <NavLink key={path} to={`/admin/${path}`}>
+                <Icon size={17} />
+                <span>
+                  {path === "people" && !administrator ? "部門參與" : label}
+                </span>
+              </NavLink>
+            ))}
+          </nav>
+        </details>
         <div className="sidebar-bottom">
-          <Link className="switch-link" to="/guide">
-            <Play size={16} />
-            行動旅程導覽
-          </Link>
-          <button className="sidebar-help" onClick={() => setHelp(true)}>
-            <CircleHelp size={16} />
-            使用說明
-          </button>
-          <Link className="switch-link" to="/app/home">
-            <ArrowLeftRight size={16} />
-            切換至員工端
-          </Link>
-          <ResetButton compact />
           <div className="sidebar-account">
             <span className="avatar small">沐</span>
             <div>
@@ -202,6 +232,51 @@ export function AdminLayout() {
               <option value="administrator">管理員 · 完整明細</option>
             </select>
 
+            <div className="workspace-tools" ref={toolsRef}>
+              <button
+                className="icon-btn"
+                ref={toolsTrigger}
+                aria-label="工作空間選項"
+                aria-expanded={tools}
+                aria-controls="workspace-tools"
+                onClick={() => setTools((v) => !v)}
+              >
+                <Ellipsis size={20} />
+              </button>
+              {tools && (
+                <div
+                  className="utility-popover"
+                  id="workspace-tools"
+                  role="group"
+                  aria-label="工作空間選項"
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest("a,button"))
+                      setTools(false);
+                  }}
+                >
+                  <span>工作空間</span>
+                  <button onClick={() => setHelp(true)}>
+                    <CircleHelp size={16} />
+                    使用說明
+                  </button>
+                  <Link to="/admin/integrations">
+                    <ChartNoAxesCombined size={16} />
+                    整合架構
+                  </Link>
+                  <Link to="/app/home">
+                    <ArrowLeftRight size={16} />
+                    切換至員工端
+                  </Link>
+                  <Link to="/guide">
+                    <Play size={16} />
+                    行動旅程導覽
+                  </Link>
+                  <div className="utility-reset">
+                    <ResetButton compact />
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               className="icon-btn notification"
               aria-label="查看通知"
