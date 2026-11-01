@@ -1,0 +1,19 @@
+// Power BI 語意模型中的六項量值；原始事件不變。
+// 目前雲端資料表名稱為「表格」，其他模型請依實際表名調整。
+DEFINE
+    MEASURE '表格'[估算排放] = SUM('表格'[emission_kg_co2e])
+    MEASURE '表格'[另列避免排放] = SUM('表格'[avoided_kg_co2e])
+    MEASURE '表格'[活動筆數] = COUNTROWS('表格')
+    MEASURE '表格'[參與員工] = DISTINCTCOUNT('表格'[employee_id])
+    MEASURE '表格'[每位參與員工平均排放] = DIVIDE([估算排放], [參與員工])
+    MEASURE '表格'[每筆活動平均排放] = DIVIDE([估算排放], [活動筆數])
+EVALUATE
+    SUMMARIZECOLUMNS(
+        '表格'[department],
+        "估算排放", [估算排放],
+        "參與員工", [參與員工],
+        "活動筆數", [活動筆數],
+        "每位參與員工平均排放", [每位參與員工平均排放],
+        "每筆活動平均排放", [每筆活動平均排放]
+    )
+ORDER BY [估算排放] DESC
