@@ -27,7 +27,7 @@ import { AdminOnly } from "../components/experience/AdminView";
 import { Brand, Modal, ResetButton, SkipLink } from "../components/ui";
 const adminLinks = [
   ["dashboard", "總覽", LayoutDashboard],
-  ["analytics", "分析", ChartNoAxesCombined],
+  // ["analytics", "分析", ChartNoAxesCombined],
   ["powerbi", "Power BI 報表", ChartColumn],
   ["alerts", "異常追蹤", Bell],
   ["reports", "ESG 報告", FileChartColumn],
