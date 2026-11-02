@@ -5,6 +5,7 @@ import { DonutChart, TrendChart } from "../../components/charts";
 import { BossChallenge } from "../../components/experience/Growth";
 import { PlantIllustration } from "../../components/experience/Illustrations";
 import { AssistantShortcut } from "../../components/experience/Microsoft";
+import { BinConnection } from "../../components/experience/BinConnection";
 import {
   TaskLinks,
   taskNames,
@@ -543,6 +544,7 @@ export function Profile() {
       </Panel>
       <details className="disclosure">
         <summary>工作空間與資料</summary>
+        <BinConnection />
         <Link className="setting-row" to="/admin/dashboard">
           切換至企業端
           <ChevronRight size={16} />

@@ -27,6 +27,7 @@ import { useExperience } from "../../store/experience";
 import { estimateTravel } from "../../utils/travel";
 import { TravelResult } from "../../components/experience/TravelResult";
 import { CalendarTripCard } from "../../components/experience/CalendarTrip";
+import { DEMO_BIN } from "../../components/experience/BinConnection";
 import { addEvent, useDemo } from "../../store/demo";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 function Receipt() {
@@ -597,15 +598,34 @@ const stages = [
 ];
 export function TrashScan() {
   const { state, setState, notify } = useDemo();
+  const bin = state.settings.recycleBin || DEMO_BIN;
   const [draft] = useState(() =>
     readDraft<{ stage: number; id: string }>("recycle"),
   );
   const [stage, setStage] = useState(draft ? Math.min(draft.stage, 4) : -1);
   const [complete, setComplete] = useState(false);
   const [running, setRunning] = useState(false);
+  const [camera, setCamera] = useState<"idle" | "opening" | "preview">("idle");
+  const [cameraError, setCameraError] = useState("");
+  const video = useRef<HTMLVideoElement>(null);
+  const stream = useRef<MediaStream | null>(null);
   const lock = useRef(false);
   const token = useRef(0);
   const id = useRef(draft?.id || crypto.randomUUID());
+  function stopCamera() {
+    stream.current?.getTracks().forEach((track) => track.stop());
+    stream.current = null;
+    if (video.current) video.current.srcObject = null;
+  }
+  function cancelScan() {
+    token.current++;
+    stopCamera();
+    setCamera("idle");
+    setStage(-1);
+    setRunning(false);
+    lock.current = false;
+    removeDraft("recycle");
+  }
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [complete, running]);
@@ -614,17 +634,65 @@ export function TrashScan() {
     else if (stage >= 0 && !running)
       saveDraft("recycle", { stage, id: id.current });
   }, [stage, running, complete]);
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    // Also release the camera when Safari puts this page in its back/forward cache.
+    const onPageHide = () => {
+      if (lock.current && !complete) cancelScan();
+    };
+    window.addEventListener("pagehide", onPageHide);
+    return () => {
       token.current++;
-    },
-    [],
-  );
-  async function scan() {
+      stopCamera();
+      window.removeEventListener("pagehide", onPageHide);
+    };
+  }, [complete]);
+  async function scan(skipCamera = false) {
     if (lock.current) return;
     lock.current = true;
     setRunning(true);
+    setCameraError("");
     const current = ++token.current;
+    if (!skipCamera) {
+      setCamera("opening");
+      try {
+        if (!navigator.mediaDevices?.getUserMedia)
+          throw new Error("camera-unavailable");
+        const media = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false,
+        });
+        // Permission may resolve after cancellation or leaving the page.
+        if (current !== token.current) {
+          media.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        stream.current = media;
+        if (!video.current) throw new Error("camera-unavailable");
+        video.current.srcObject = media;
+        setCamera("preview");
+        await video.current.play();
+        if (current !== token.current) return;
+        await wait(1000);
+        if (current !== token.current) return;
+        stopCamera();
+        setCamera("idle");
+      } catch (error) {
+        if (current !== token.current) return;
+        stopCamera();
+        setCamera("idle");
+        setRunning(false);
+        lock.current = false;
+        const denied =
+          error instanceof DOMException && error.name === "NotAllowedError";
+        setCameraError(
+          denied
+            ? "尚未取得相機權限，請允許相機後重試，或略過相機繼續 Demo。"
+            : "目前無法開啟相機，請確認使用 HTTPS、相機可用且已授權，或略過相機繼續 Demo。",
+        );
+        return;
+      }
+    }
+    // Demo response sequence. Replace this boundary with bin notifications when available.
     for (let i = 0; i < 5; i++) {
       if (current !== token.current) return;
       setStage(i);
@@ -647,7 +715,7 @@ export function TrashScan() {
         date: `${BASE_DATE}T15:00:00`,
         emission: 0.12,
         avoided: 0.35,
-        detail: "寶特瓶 320 g · IoT 資料流程",
+        detail: `寶特瓶 320 g · ${bin.name}（${bin.id}）· Demo 模擬回應`,
         mock: true,
       }),
     );
@@ -657,7 +725,7 @@ export function TrashScan() {
   return (
     <>
       <ScanExit
-        dirty={stage >= 0 && !complete}
+        dirty={(running || stage >= 0) && !complete}
         save={() =>
           saveDraft("recycle", { stage: running ? -1 : stage, id: id.current })
         }
@@ -673,15 +741,47 @@ export function TrashScan() {
       {stage === -1 && (
         <>
           <div className="qr-stage">
-            <div className="qr-frame">
-              <QrCode size={150} strokeWidth={1.2} />
+            <div
+              className={`qr-frame recycle-camera ${camera === "preview" ? "is-preview" : ""}`}
+            >
+              <video
+                ref={video}
+                muted
+                playsInline
+                autoPlay
+                aria-label="垃圾桶掃描相機"
+              />
+              {camera === "opening" ? (
+                <LoaderCircle className="spin" size={40} aria-label="開啟相機中" />
+              ) : camera === "idle" ? (
+                <QrCode size={150} strokeWidth={1.2} />
+              ) : null}
             </div>
-            <p>青禾辦公室 3F · 智慧垃圾桶 01</p>
-            <small>將 QR Code 對準框內</small>
+            <p>{bin.name}</p>
+            <small role="status">
+              {camera === "opening"
+                ? "請允許使用相機"
+                : camera === "preview"
+                  ? "掃描中，1 秒後關閉相機"
+                  : "相機預覽 1 秒後，進入回收工作階段"}
+            </small>
+            <small>Demo 模式 · 使用模擬回應</small>
           </div>
-          <Button className="full scan-primary" onClick={scan}>
-            <ScanLine size={18} />
-            開始回收
+          {cameraError && (
+            <div className="error" role="alert">
+              <p>{cameraError}</p>
+              <Button secondary className="full" onClick={() => scan(true)}>
+                略過相機，繼續 Demo
+              </Button>
+            </div>
+          )}
+          <Button
+            className="full scan-primary"
+            secondary={running}
+            onClick={running ? cancelScan : () => scan()}
+          >
+            {!running && <ScanLine size={18} />}
+            {running ? "取消掃描" : cameraError ? "重試相機" : "開始回收"}
           </Button>
         </>
       )}
@@ -692,6 +792,7 @@ export function TrashScan() {
               <LoaderCircle className="spin" size={24} />
               <h2>{stages[stage]}</h2>
               <p>{stage + 1} / 5</p>
+              <p>正在等待垃圾桶回應（Demo 模擬）</p>
             </div>
           )}
           <details className="disclosure">
@@ -725,10 +826,7 @@ export function TrashScan() {
               secondary
               className="full"
               onClick={() => {
-                token.current++;
-                setStage(-1);
-                setRunning(false);
-                lock.current = false;
+                cancelScan();
                 notify("已取消掃描");
               }}
             >
@@ -738,6 +836,7 @@ export function TrashScan() {
             <>
               <Panel>
                 <h2>回收結果確認</h2>
+                <p className="draft-notice">Demo 模擬回應 · {bin.name}</p>
                 <dl className="detail-list">
                   <div>
                     <dt>物品類別</dt>

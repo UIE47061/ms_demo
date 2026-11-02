@@ -59,5 +59,9 @@ export interface DemoState {
   exp: number;
   redemptions: Redemption[];
   devices: Device[];
-  settings: { notifications: boolean; summary: boolean };
+  settings: {
+    notifications: boolean;
+    summary: boolean;
+    recycleBin?: { name: string; id: string; mode: "demo" };
+  };
 }
