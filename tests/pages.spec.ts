@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const disallowedCopy = /\bDemo\b|\bMock\b|示範|模擬|展示|示意|範例|本機|未連接/i;
+
 test("正式產物在 repository 子路徑可導覽、重新整理及下載資料", async ({
   page,
   baseURL,
@@ -38,9 +40,7 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
     await page.reload();
     expect(failures, `載入 ${path} 的資源與執行錯誤`).toEqual([]);
     await expect(page.locator("main h1").first()).toBeVisible();
-    await expect(page.locator("body")).not.toContainText(
-      /\bDemo\b|\bMock\b|示範|模擬|展示|示意|範例|本機|未連接/i,
-    );
+    await expect(page.locator("body")).not.toContainText(disallowedCopy);
   }
   await page.goto(`${baseURL}#/admin/analytics`);
   await page.reload();
@@ -64,6 +64,40 @@ test("正式產物在 repository 子路徑可導覽、重新整理及下載資�
     .press("Enter");
   await expect(page).toHaveURL(/#\/app\/home$/);
   await expect(page.locator("#employee-content")).toBeFocused();
+});
+
+test("正式產物的垃圾桶設定與回收流程保留預覽說明且符合文案規則", async ({
+  page,
+  baseURL,
+}) => {
+  await page.addInitScript(() => {
+    navigator.mediaDevices.getUserMedia = async () => {
+      throw new DOMException("Denied", "NotAllowedError");
+    };
+  });
+  await page.goto(`${baseURL}#/app/profile`);
+  await page.getByText("工作空間與資料", { exact: true }).click();
+  await page.getByRole("button", { name: "連接垃圾桶", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("尚未與實體垃圾桶連線");
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
+  await page.getByRole("button", { name: "保存垃圾桶設定" }).click();
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
+  await page.goto(`${baseURL}#/app/trash-scan`);
+  await expect(page.locator(".qr-stage")).toContainText("回收資料使用預設值");
+  await page.getByRole("button", { name: "開始回收" }).click();
+  await expect(page.getByRole("alert")).toContainText("尚未取得相機權限");
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
+  await page.getByRole("button", { name: "略過相機，繼續流程" }).click();
+  await expect(page.locator(".scan-progress")).toContainText("預覽模式");
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
+  await expect(page.getByRole("heading", { name: "回收結果確認" })).toBeVisible();
+  await expect(page.locator(".draft-notice")).toContainText("回收資料使用預設值");
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
+  await page.getByRole("button", { name: "確認碳排入帳" }).click();
+  await page.goto(`${baseURL}#/app/footprint?view=records`);
+  await page.getByRole("button", { name: /智慧垃圾桶・寶特瓶分類回收/ }).click();
+  await expect(page.getByRole("dialog")).toContainText("回收資料使用預設值");
+  await expect(page.locator("body")).not.toContainText(disallowedCopy);
 });
 
 test("場景可重播、沒有自動入帳，減少動態效果偏好會停止動畫", async ({

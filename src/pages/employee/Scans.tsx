@@ -686,8 +686,8 @@ export function TrashScan() {
           error instanceof DOMException && error.name === "NotAllowedError";
         setCameraError(
           denied
-            ? "尚未取得相機權限，請允許相機後重試，或略過相機繼續 Demo。"
-            : "目前無法開啟相機，請確認使用 HTTPS、相機可用且已授權，或略過相機繼續 Demo。",
+            ? "尚未取得相機權限，請允許相機後重試，或略過相機繼續流程。"
+            : "目前無法開啟相機，請確認使用 HTTPS、相機可用且已授權，或略過相機繼續流程。",
         );
         return;
       }
@@ -715,7 +715,7 @@ export function TrashScan() {
         date: `${BASE_DATE}T15:00:00`,
         emission: 0.12,
         avoided: 0.35,
-        detail: `寶特瓶 320 g · ${bin.name}（${bin.id}）· Demo 模擬回應`,
+        detail: `寶特瓶 320 g · ${bin.name}（${bin.id}）· 預覽模式 · 回收資料使用預設值`,
         mock: true,
       }),
     );
@@ -765,13 +765,13 @@ export function TrashScan() {
                   ? "掃描中，1 秒後關閉相機"
                   : "相機預覽 1 秒後，進入回收工作階段"}
             </small>
-            <small>Demo 模式 · 使用模擬回應</small>
+            <small>預覽模式 · 回收資料使用預設值</small>
           </div>
           {cameraError && (
             <div className="error" role="alert">
               <p>{cameraError}</p>
               <Button secondary className="full" onClick={() => scan(true)}>
-                略過相機，繼續 Demo
+                略過相機，繼續流程
               </Button>
             </div>
           )}
@@ -792,7 +792,7 @@ export function TrashScan() {
               <LoaderCircle className="spin" size={24} />
               <h2>{stages[stage]}</h2>
               <p>{stage + 1} / 5</p>
-              <p>正在等待垃圾桶回應（Demo 模擬）</p>
+              <p>正在處理預設回收資料（預覽模式）</p>
             </div>
           )}
           <details className="disclosure">
@@ -836,7 +836,7 @@ export function TrashScan() {
             <>
               <Panel>
                 <h2>回收結果確認</h2>
-                <p className="draft-notice">Demo 模擬回應 · {bin.name}</p>
+                <p className="draft-notice">預覽模式 · 回收資料使用預設值 · {bin.name}</p>
                 <dl className="detail-list">
                   <div>
                     <dt>物品類別</dt>

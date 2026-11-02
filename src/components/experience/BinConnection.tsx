@@ -30,8 +30,8 @@ export function BinConnection() {
       </button>
       {open && (
         <Modal title="連接垃圾桶" onClose={() => setOpen(false)}>
-          <span className="status neutral">Demo 模式 · 未連接實體裝置</span>
-          <p>先保存要使用的垃圾桶；掃描後會以示範回應完成回收流程。</p>
+          <span className="status neutral">預覽模式 · 尚未與實體垃圾桶連線</span>
+          <p>先保存要使用的垃圾桶；掃描後會以預設資料完成回收流程。</p>
           <form
             className="bin-connection-form"
             onSubmit={(event) => {
@@ -45,7 +45,7 @@ export function BinConnection() {
                 },
               }));
               setOpen(false);
-              notify("已保存垃圾桶 Demo 綁定");
+              notify("已保存垃圾桶設定");
             }}
           >
             <label>
@@ -68,15 +68,15 @@ export function BinConnection() {
             </label>
             <p>
               {binding
-                ? `目前 Demo 綁定：${binding.name}（${binding.id}）`
-                : "尚未綁定，掃描時會使用預設示範垃圾桶。"}
+                ? `目前綁定：${binding.name}（${binding.id}）`
+                : "尚未綁定，掃描時會使用預設垃圾桶資料。"}
             </p>
             <Button
               type="submit"
               className="full"
               disabled={!name.trim() || !id.trim()}
             >
-              保存 Demo 綁定
+              保存垃圾桶設定
             </Button>
             {binding && (
               <Button
@@ -88,7 +88,7 @@ export function BinConnection() {
                     return { ...s, settings };
                   });
                   setOpen(false);
-                  notify("已解除垃圾桶 Demo 綁定");
+                  notify("已解除垃圾桶綁定");
                 }}
               >
                 解除綁定

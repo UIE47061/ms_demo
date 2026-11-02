@@ -7,10 +7,10 @@ test("隱藏設定可保存、跨頁套用、解除與重設 Demo 綁定", async
   await expect(setting).toBeHidden();
   await page.getByText("工作空間與資料", { exact: true }).click();
   await setting.click();
-  await expect(page.getByRole("dialog")).toContainText("未連接實體裝置");
+  await expect(page.getByRole("dialog")).toContainText("尚未與實體垃圾桶連線");
   await page.getByLabel("垃圾桶名稱", { exact: true }).fill("家裡的垃圾桶");
   await page.getByLabel("垃圾桶識別碼", { exact: true }).fill("home-bin");
-  await page.getByRole("button", { name: "保存 Demo 綁定" }).click();
+  await page.getByRole("button", { name: "保存垃圾桶設定" }).click();
   await page.reload();
   await page.getByText("工作空間與資料", { exact: true }).click();
   await setting.click();
@@ -25,7 +25,7 @@ test("隱藏設定可保存、跨頁套用、解除與重設 Demo 綁定", async
   await page.getByRole("button", { name: "解除綁定" }).click();
   await setting.click();
   await expect(page.getByLabel("垃圾桶識別碼", { exact: true })).toHaveValue("bin-01");
-  await page.getByRole("button", { name: "保存 Demo 綁定" }).click();
+  await page.getByRole("button", { name: "保存垃圾桶設定" }).click();
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "重設工作空間資料" }).click();
   await page.getByText("工作空間與資料", { exact: true }).click();
@@ -75,7 +75,7 @@ test("相機預覽滿一秒後釋放鏡頭才進入工作階段，手動確認�
   const events = await page.evaluate(() => JSON.parse(localStorage.getItem("eco-sensing-demo-v1")!).events);
   expect(events).toHaveLength(count + 1);
   expect(events[0]).toMatchObject({ mock: true });
-  expect(events[0].detail).toContain("Demo 模擬回應");
+  expect(events[0].detail).toContain("預覽模式 · 回收資料使用預設值");
 });
 
 test("拒絕相機權限可明確略過繼續 Demo", async ({ page }) => {
@@ -88,7 +88,7 @@ test("拒絕相機權限可明確略過繼續 Demo", async ({ page }) => {
   await page.getByRole("button", { name: "開始回收" }).click();
   await expect(page.getByRole("alert")).toContainText("尚未取得相機權限");
   await expect(page.getByRole("heading", { name: "已建立工作階段" })).toHaveCount(0);
-  await page.getByRole("button", { name: "略過相機，繼續 Demo" }).click();
+  await page.getByRole("button", { name: "略過相機，繼續流程" }).click();
   await expect(page.getByRole("heading", { name: "回收結果確認" })).toBeVisible();
 });
 
